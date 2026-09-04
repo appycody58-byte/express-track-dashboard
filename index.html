@@ -36,13 +36,6 @@
     }
     .topbar .logo { font-size: 14px; font-weight: 650; letter-spacing: 0.04em; }
     .topbar .logo span { font-weight: 400; opacity: 0.7; margin-left: 6px; }
-    .topbar a {
-      color: rgba(255,255,255,0.75);
-      text-decoration: none;
-      font-size: 13px;
-      margin-left: 18px;
-    }
-    .topbar a:hover { color: #fff; }
     .wrap {
       max-width: 1100px;
       margin: 0 auto;
@@ -250,10 +243,6 @@
 <body>
   <div class="topbar">
     <div class="logo">GLOBAL EXPRESS <span>TRACKING</span></div>
-    <div>
-      <a href="index.html">Peggy Palmer</a>
-      <a href="anita.html">Anita Vincent</a>
-    </div>
   </div>
 
   <div class="wrap">
@@ -334,76 +323,38 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
-    // Houston → ~7 hours (Texarkana corridor) → Elizabethton, TN
     const ORIGIN = { lat: 29.7604, lng: -95.3698, label: 'Houston, TX (Origin)' };
-    const CURRENT = { lat: 33.4251, lng: -94.0477, label: 'Current position' }; // Texarkana ~7 hrs
+    const CURRENT = { lat: 33.4251, lng: -94.0477, label: 'Current position' };
     const DEST = { lat: 36.3487, lng: -82.2107, label: 'Elizabethton, TN' };
-
     const TN = '11881-87236-402382053';
-
     let map, driverMarker;
 
     function initMap() {
-      map = L.map('map', {
-        scrollWheelZoom: false,
-        zoomControl: true
-      }).setView([32.2, -88.5], 6);
-
+      map = L.map('map', { scrollWheelZoom: false, zoomControl: true }).setView([32.2, -88.5], 6);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap',
-        maxZoom: 18
+        attribution: '&copy; OpenStreetMap', maxZoom: 18
       }).addTo(map);
 
-      L.polyline(
-        [[ORIGIN.lat, ORIGIN.lng], [CURRENT.lat, CURRENT.lng]],
-        { color: '#1b2a4a', weight: 4, opacity: 0.9 }
-      ).addTo(map);
+      L.polyline([[ORIGIN.lat, ORIGIN.lng], [CURRENT.lat, CURRENT.lng]],
+        { color: '#1b2a4a', weight: 4, opacity: 0.9 }).addTo(map);
+      L.polyline([[CURRENT.lat, CURRENT.lng], [DEST.lat, DEST.lng]],
+        { color: '#98a2b3', weight: 3, opacity: 0.75, dashArray: '8 8' }).addTo(map);
 
-      L.polyline(
-        [[CURRENT.lat, CURRENT.lng], [DEST.lat, DEST.lng]],
-        { color: '#98a2b3', weight: 3, opacity: 0.75, dashArray: '8 8' }
-      ).addTo(map);
-
-      const originIcon = L.divIcon({
-        className: '',
-        html: '<div class="map-label">Origin</div>',
-        iconSize: [56, 24],
-        iconAnchor: [28, 12]
-      });
-      const currentIcon = L.divIcon({
-        className: '',
-        html: '<div class="map-label current">Driver</div>',
-        iconSize: [58, 24],
-        iconAnchor: [29, 12]
-      });
-      const destIcon = L.divIcon({
-        className: '',
-        html: '<div class="map-label">Destination</div>',
-        iconSize: [90, 24],
-        iconAnchor: [45, 12]
-      });
+      const originIcon = L.divIcon({ className: '', html: '<div class="map-label">Origin</div>', iconSize: [56, 24], iconAnchor: [28, 12] });
+      const currentIcon = L.divIcon({ className: '', html: '<div class="map-label current">Driver</div>', iconSize: [58, 24], iconAnchor: [29, 12] });
+      const destIcon = L.divIcon({ className: '', html: '<div class="map-label">Destination</div>', iconSize: [90, 24], iconAnchor: [45, 12] });
 
       L.marker([ORIGIN.lat, ORIGIN.lng], { icon: originIcon }).addTo(map)
         .bindPopup('<strong>Houston, TX</strong><br>Origin facility');
-
       driverMarker = L.marker([CURRENT.lat, CURRENT.lng], { icon: currentIcon }).addTo(map)
         .bindPopup('<strong>Current position</strong><br>Texarkana, TX / AR corridor<br>Approx. 7 hours from Houston<br>~20% of total route');
-
       L.marker([DEST.lat, DEST.lng], { icon: destIcon }).addTo(map)
         .bindPopup('<strong>Elizabethton, TN</strong><br>1201 Thomas Blvd<br>Peggy Palmer');
 
-      map.fitBounds(
-        L.latLngBounds([
-          [ORIGIN.lat, ORIGIN.lng],
-          [CURRENT.lat, CURRENT.lng],
-          [DEST.lat, DEST.lng]
-        ]),
-        { padding: [40, 40] }
-      );
-
-      setTimeout(() => {
-        map.panTo([CURRENT.lat, CURRENT.lng], { animate: true });
-      }, 600);
+      map.fitBounds(L.latLngBounds([
+        [ORIGIN.lat, ORIGIN.lng], [CURRENT.lat, CURRENT.lng], [DEST.lat, DEST.lng]
+      ]), { padding: [40, 40] });
+      setTimeout(() => map.panTo([CURRENT.lat, CURRENT.lng], { animate: true }), 600);
     }
 
     function renderTimeline(events) {
@@ -418,8 +369,7 @@
         html += `<div class="ti ${st}"><div class="td"></div>` +
           `<div class="tit">${e.title || 'Update'}</div>` +
           (e.loc ? `<div class="til">${e.loc}</div>` : '') +
-          (e.time ? `<div class="titm">${e.time}</div>` : '') +
-          `</div>`;
+          (e.time ? `<div class="titm">${e.time}</div>` : '') + `</div>`;
       });
       root.innerHTML = html;
       requestAnimationFrame(() => {
@@ -437,7 +387,6 @@
         const res = await fetch('/api/track?number=' + encodeURIComponent(TN));
         const d = await res.json();
         const prog = d.progress != null ? d.progress : 20;
-
         document.getElementById('tn').textContent = d.trackingNumber || TN;
         document.getElementById('status').textContent = d.status || 'In Transit';
         document.getElementById('statusMeta').textContent =
@@ -448,17 +397,14 @@
         document.getElementById('eta').textContent = d.eta || '—';
         document.getElementById('carrier').textContent = d.carrier || 'Ground';
         document.getElementById('asof').textContent = new Date().toLocaleString('en-US');
-
         if (d.currentLocation) {
           document.getElementById('currentLoc').textContent = d.currentLocation;
           document.getElementById('mapLoc').textContent = d.currentLocation;
         }
-
         document.getElementById('source').textContent =
           (d.live ? 'Data source: EasyPost (live). ' : '') +
           (d.source || 'Registered network') +
           '. Position reflects approximately seven hours of driving from Houston on the opening leg; about 80% of the route to Elizabethton, TN remains.';
-
         renderTimeline(d.events || []);
       } catch (e) {
         document.getElementById('statusMeta').textContent = 'Status refresh unavailable · showing map position';

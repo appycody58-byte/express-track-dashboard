@@ -1,4 +1,4 @@
-// Vercel serverless — EasyPost Tracker + mid-route fallback for registered TNs
+// Vercel serverless — EasyPost Tracker + early-route (~20%) fallback for registered TNs
 
 const REGISTRY = {
   '1188187236402382053': {
@@ -45,14 +45,25 @@ function dayStr(d) {
   });
 }
 
-/** Mid-route (~50%) timeline for registered packages */
-function midRouteFallback(reg, trackingNumber) {
+/**
+ * Early route (~20%) — Texas → Tennessee
+ * Late start yesterday (barely moved), rolling again today.
+ * Current area: East Texas corridor (Beaumont / Orange toward LA line).
+ */
+function earlyRouteFallback(reg, trackingNumber) {
   const now = new Date();
-  const t0 = new Date(now.getTime() - 18 * 3600000);
-  const t1 = new Date(now.getTime() - 14 * 3600000);
-  const t2 = new Date(now.getTime() - 8 * 3600000);
-  const t3 = new Date(now.getTime() - 2 * 3600000);
-  const eta = new Date(now.getTime() + 30 * 3600000);
+  // Label created yesterday afternoon
+  const t0 = new Date(now.getTime() - 28 * 3600000);
+  // Picked up late last night
+  const t1 = new Date(now.getTime() - 22 * 3600000);
+  // Departed Houston — very late, short leg only
+  const t2 = new Date(now.getTime() - 20 * 3600000);
+  // Stopped overnight (too late to continue)
+  const t3 = new Date(now.getTime() - 16 * 3600000);
+  // Resumed this morning — current scan East Texas
+  const t4 = new Date(now.getTime() - 3 * 3600000);
+  // Still ~1.5–2 days of road left at this pace
+  const eta = new Date(now.getTime() + 42 * 3600000);
 
   return {
     trackingNumber: reg.displayTn || trackingNumber,
@@ -65,18 +76,25 @@ function midRouteFallback(reg, trackingNumber) {
     destLabel: reg.destLabel,
     carrier: 'Global Express',
     status: 'In Transit',
-    statusDetail: 'Arrived at Regional Hub',
-    progress: 50,
+    statusDetail: 'East Texas corridor · early leg',
+    progress: 20,
     isPreTransit: false,
     live: false,
-    source: 'Registered network (mid-route)',
-    lastScan: fmt(t3),
+    source: 'Registered network (~20% · early transit)',
+    lastScan: fmt(t4),
     eta: dayStr(eta),
+    currentLocation: 'Beaumont / Orange, TX area',
     events: [
       { title: 'Label Created', loc: 'Houston, TX US', time: fmt(t0), state: 'done' },
       { title: 'Picked Up', loc: 'Houston, TX', time: fmt(t1), state: 'done' },
       { title: 'Departed Origin Facility', loc: 'Houston, TX', time: fmt(t2), state: 'done' },
-      { title: 'Arrived at Regional Hub', loc: 'In transit · network hub', time: fmt(t3), state: 'current' },
+      { title: 'Overnight stop', loc: 'East of Houston, TX', time: fmt(t3), state: 'done' },
+      {
+        title: 'In Transit',
+        loc: 'Beaumont / Orange, TX · toward Louisiana',
+        time: fmt(t4),
+        state: 'current'
+      },
       { title: 'Out for Delivery', loc: reg.destLabel, time: '', state: 'pending' },
       { title: 'Delivered', loc: reg.destLabel, time: '', state: 'pending' }
     ]
@@ -100,10 +118,15 @@ function mapEasyPostEvents(details) {
     const loc = [d.tracking_location?.city, d.tracking_location?.state, d.tracking_location?.country]
       .filter(Boolean)
       .join(', ');
-    const time = d.datetime ? new Date(d.datetime).toLocaleString('en-US', {
-      month: 'numeric', day: 'numeric', year: '2-digit',
-      hour: 'numeric', minute: '2-digit'
-    }) : '';
+    const time = d.datetime
+      ? new Date(d.datetime).toLocaleString('en-US', {
+          month: 'numeric',
+          day: 'numeric',
+          year: '2-digit',
+          hour: 'numeric',
+          minute: '2-digit'
+        })
+      : '';
     let state = 'done';
     if (i === 0) state = 'current';
     return { title, loc, time, state, desc: d.message || '' };
@@ -120,7 +143,6 @@ async function trackEasyPost(trackingCode) {
     'Content-Type': 'application/json'
   };
 
-  // Create or fetch tracker
   let tracker = null;
   const createRes = await fetch('https://api.easypost.com/v2/trackers', {
     method: 'POST',
@@ -145,8 +167,7 @@ async function trackEasyPost(trackingCode) {
 
   const status = tracker.status || tracker.status_detail || 'unknown';
   const events = mapEasyPostEvents(tracker.tracking_details);
-  // Ensure at least one current
-  if (events.length && !events.some(e => e.state === 'current')) {
+  if (events.length && !events.some((e) => e.state === 'current')) {
     events[0].state = 'current';
   }
 
@@ -161,9 +182,7 @@ async function trackEasyPost(trackingCode) {
     live: true,
     source: 'EasyPost Tracker',
     lastScan: last?.time || '',
-    eta: tracker.est_delivery_date
-      ? dayStr(new Date(tracker.est_delivery_date))
-      : '',
+    eta: tracker.est_delivery_date ? dayStr(new Date(tracker.est_delivery_date)) : '',
     events,
     mode: tracker.mode
   };
@@ -187,11 +206,9 @@ export default async function handler(req, res) {
   const cleaned = cleanTn(raw);
   const reg = REGISTRY[cleaned];
 
-  // Registered Peggy / Anita → mid-route unless EasyPost has a real tracker
   try {
     const live = await trackEasyPost(cleaned);
     if (live && live.live && live.events?.length) {
-      // Merge registry identity if known
       if (reg) {
         live.name = reg.name;
         live.street = reg.street;
@@ -209,10 +226,9 @@ export default async function handler(req, res) {
   }
 
   if (reg) {
-    return res.status(200).json(midRouteFallback(reg, raw));
+    return res.status(200).json(earlyRouteFallback(reg, raw));
   }
 
-  // Unknown number, no live data
   return res.status(200).json({
     trackingNumber: raw,
     carrier: 'Unknown',

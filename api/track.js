@@ -45,17 +45,13 @@ function dayStr(d) {
   });
 }
 
-/**
- * Early route (~20%) — Texas → Tennessee
- * Only ~3 hours driven after leaving Houston (second checkpoint).
- * Current: Lake Charles, LA corridor. ~80% of route still remaining.
- */
+/** Early route (~20%) — ~7 hours from Houston, Texarkana corridor, checkpoint 2 */
 function earlyRouteFallback(reg, trackingNumber) {
   const now = new Date();
-  const t0 = new Date(now.getTime() - 30 * 3600000);
-  const t1 = new Date(now.getTime() - 26 * 3600000);
-  const t2 = new Date(now.getTime() - 24 * 3600000);
-  const t3 = new Date(now.getTime() - 5 * 3600000);
+  const t0 = new Date(now.getTime() - 36 * 3600000);
+  const t1 = new Date(now.getTime() - 32 * 3600000);
+  const t2 = new Date(now.getTime() - 30 * 3600000);
+  const t3 = new Date(now.getTime() - 4 * 3600000);
   const eta = new Date(now.getTime() + 48 * 3600000);
 
   return {
@@ -69,21 +65,21 @@ function earlyRouteFallback(reg, trackingNumber) {
     destLabel: reg.destLabel,
     carrier: 'Global Express',
     status: 'In Transit',
-    statusDetail: 'Second checkpoint · approx. 3 hours from origin',
+    statusDetail: 'Second checkpoint · approx. 7 hours from origin',
     progress: 20,
     isPreTransit: false,
     live: false,
     source: 'Registered network (~20% complete · 80% remaining)',
     lastScan: fmt(t3),
     eta: dayStr(eta),
-    currentLocation: 'Lake Charles, LA corridor',
+    currentLocation: 'Texarkana, TX / AR corridor',
     events: [
       { title: 'Label Created', loc: 'Houston, TX US', time: fmt(t0), state: 'done' },
       { title: 'Picked Up', loc: 'Houston, TX', time: fmt(t1), state: 'done' },
       { title: 'Departed Origin Facility', loc: 'Houston, TX', time: fmt(t2), state: 'done' },
       {
         title: 'In Transit — Checkpoint 2',
-        loc: 'Lake Charles, LA corridor · approx. 3 hours from Houston',
+        loc: 'Texarkana, TX / AR corridor · approx. 7 hours from Houston',
         time: fmt(t3),
         state: 'current'
       },

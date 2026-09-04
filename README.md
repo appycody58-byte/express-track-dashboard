@@ -1,17 +1,22 @@
 # Global Express Tracking
 
-Professional shipment tracking pages. **Peggy Palmer is the primary shipment** (home page). Anita Vincent has a separate page.
+Professional shipment tracking for **Peggy Palmer**.
 
-## Pages
+## Live
 
-| Page | URL path | Tracking |
-|------|----------|----------|
-| **Peggy Palmer (primary)** | `/` or `/index.html` | `11881-87236-402382053` |
-| Anita Vincent | `/anita.html` | `48291-55307-918274036` |
+https://express-track-dashboard.vercel.app
 
-## Status model (registered network)
+## Shipment
 
-Early transit **~20%** — East Texas corridor after a late departure from Houston toward Tennessee.
+| Field | Value |
+|-------|--------|
+| Recipient | Peggy Palmer |
+| Address | 1201 Thomas Blvd, Elizabethton, TN 37643 |
+| Phone | 423.491-0319 |
+| Tracking | `11881-87236-402382053` |
+| Origin | Houston, TX |
+| Current | Texarkana corridor (~7 hours from origin) |
+| Progress | ~20% complete · 80% remaining |
 
 ## API
 
@@ -19,8 +24,4 @@ Early transit **~20%** — East Texas corridor after a late departure from Houst
 GET /api/track?number=11881-87236-402382053
 ```
 
-Optional: set `EASYPOST_API_KEY` on Vercel for live carrier tracking on real numbers.
-
-## Live
-
-https://express-track-dashboard.vercel.app
+Optional: set `EASYPOST_API_KEY` on Vercel for live carrier tracking.

@@ -135,7 +135,7 @@
       overflow: visible; position: relative;
     }
     .bar-fill {
-      height: 100%; border-radius: 4px; width: 50%;
+      height: 100%; border-radius: 4px; width: 20%;
       background: linear-gradient(90deg, var(--accent), #60a5fa);
       position: relative; transition: width 0.4s ease;
     }
@@ -204,14 +204,14 @@
   <header>
     <div class="logo">Express<span>Track</span></div>
     <div class="header-right">
-      <div class="badge-live" id="headerBadge">In transit · Mid-route</div>
+      <div class="badge-live" id="headerBadge">In transit · ~20%</div>
       <button class="btn" id="btnRefresh" onclick="refreshAll()">Refresh</button>
     </div>
   </header>
 
   <div class="wrap">
     <h1>Shipment dashboard</h1>
-    <p class="sub">Peggy Palmer &amp; Anita Vincent — mid-route by default. Real carrier numbers use EasyPost Tracker when configured.</p>
+    <p class="sub">Peggy Palmer &amp; Anita Vincent — ~20% early transit (East Texas). EasyPost live when keyed.</p>
 
     <div class="lookup">
       <input id="lookupTn" placeholder="Track any number (EasyPost live or registered)" value="">
@@ -227,8 +227,8 @@
       </div>
       <div class="stat">
         <div class="label">Route progress</div>
-        <div class="value" id="statProg">~50%</div>
-        <div class="hint" id="statProgHint">Half of the way</div>
+        <div class="value" id="statProg">~20%</div>
+        <div class="hint" id="statProgHint">Early leg · just rolling</div>
       </div>
       <div class="stat">
         <div class="label">Data source</div>
@@ -245,7 +245,7 @@
             <div class="addr" id="peggy-addr">1201 Thomas Blvd · Elizabethton, TN 37643</div>
             <div class="tn" id="peggy-tn">11881-87236-402382053</div>
           </div>
-          <span class="status-pill mid" id="peggy-pill">In Transit · ~50%</span>
+          <span class="status-pill mid" id="peggy-pill">In Transit · ~20%</span>
         </div>
         <div class="card-body">
           <div class="progress-wrap">
@@ -253,8 +253,8 @@
               <span>Houston, TX</span>
               <span id="peggy-dest-label">Elizabethton, TN</span>
             </div>
-            <div class="bar"><div class="bar-fill" id="peggy-bar" style="width:50%"></div></div>
-            <div class="pct" id="peggy-pct">Halfway · Regional hub</div>
+            <div class="bar"><div class="bar-fill" id="peggy-bar" style="width:20%"></div></div>
+            <div class="pct" id="peggy-pct">East Texas · early leg</div>
             <div class="source-tag" id="peggy-source">Loading…</div>
           </div>
           <div class="route-grid">
@@ -282,7 +282,7 @@
             <div class="addr" id="anita-addr">4817 Friendly St</div>
             <div class="tn" id="anita-tn">48291-55307-918274036</div>
           </div>
-          <span class="status-pill mid" id="anita-pill">In Transit · ~50%</span>
+          <span class="status-pill mid" id="anita-pill">In Transit · ~20%</span>
         </div>
         <div class="card-body">
           <div class="progress-wrap">
@@ -290,8 +290,8 @@
               <span>Houston, TX</span>
               <span id="anita-dest-label">Destination</span>
             </div>
-            <div class="bar"><div class="bar-fill" id="anita-bar" style="width:50%"></div></div>
-            <div class="pct" id="anita-pct">Halfway · On the road</div>
+            <div class="bar"><div class="bar-fill" id="anita-bar" style="width:20%"></div></div>
+            <div class="pct" id="anita-pct">East Texas · early leg</div>
             <div class="source-tag" id="anita-source">Loading…</div>
           </div>
           <div class="route-grid">
@@ -380,7 +380,7 @@
     }
 
     function applyCard(prefix, data) {
-      const prog = data.progress != null ? data.progress : 50;
+      const prog = data.progress != null ? data.progress : 20;
       const bar = document.getElementById(prefix + '-bar');
       if (bar) bar.style.width = prog + '%';
 
@@ -391,7 +391,7 @@
       }
 
       const pct = document.getElementById(prefix + '-pct');
-      if (pct) pct.textContent = (data.statusDetail || data.status || '') + (prog === 50 ? ' · Halfway' : '');
+      if (pct) pct.textContent = (data.statusDetail || data.status || '') + (prog <= 25 ? ' · Early leg' : '');
 
       const src = document.getElementById(prefix + '-source');
       if (src) src.textContent = (data.live ? 'Live · ' : '') + (data.source || '');
@@ -436,7 +436,7 @@
             const data = await fetchTrack(s.tn);
             applyCard(s.key, data);
             if (data.live) anyLive = true;
-            avgProg += data.progress || 50;
+            avgProg += data.progress || 20;
             if (data.source) sources.add(data.source);
           } catch (e) {
             document.getElementById(s.key + '-source').textContent = 'Error · using last view';
@@ -444,12 +444,12 @@
         }
         avgProg = Math.round(avgProg / SHIPMENTS.length);
         document.getElementById('statProg').textContent = '~' + avgProg + '%';
-        document.getElementById('statProgHint').textContent = avgProg === 50 ? 'Half of the way' : 'From tracker';
+        document.getElementById('statProgHint').textContent = avgProg <= 25 ? 'Early leg · just rolling' : 'From tracker';
         document.getElementById('statSource').textContent = anyLive ? 'EasyPost' : 'Network';
         document.getElementById('statSourceHint').textContent = [...sources].slice(0, 2).join(' · ') || '—';
         document.getElementById('headerBadge').textContent = anyLive
           ? 'Live · EasyPost'
-          : 'In transit · Mid-route';
+          : 'In transit · ~20%';
         document.getElementById('asof').textContent = new Date().toLocaleString('en-US');
       } catch (e) {
         showErr(e.message);
@@ -480,7 +480,6 @@
       }
     }
 
-    // Initial load
     refreshAll();
   </script>
 </body>

@@ -3,236 +3,220 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tracking · Peggy Palmer · 11881-87236-402382053</title>
+  <title>Shipment Tracking · Peggy Palmer · 11881-87236-402382053</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <style>
     :root {
-      --bg: #f4f5f7;
+      --bg: #f0f2f5;
       --surface: #ffffff;
-      --border: #d8dce3;
-      --text: #1a1d23;
-      --muted: #5c6570;
-      --accent: #1e3a5f;
-      --accent-soft: #e8eef5;
-      --line: #c5ccd6;
-      --done: #1e3a5f;
-      --current: #1e3a5f;
-      --pending: #b0b7c3;
+      --border: #d0d5dd;
+      --text: #101828;
+      --muted: #667085;
+      --navy: #1b2a4a;
+      --navy-mid: #243556;
+      --line: #eaecf0;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
       font-size: 14px;
       line-height: 1.5;
       min-height: 100vh;
     }
-    header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      height: 56px;
+
+    /* Top bar */
+    .topbar {
+      background: var(--navy);
+      color: #fff;
+      height: 52px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 28px;
+      padding: 0 24px;
     }
-    .brand {
-      font-size: 15px;
-      font-weight: 650;
-      letter-spacing: 0.02em;
-      color: var(--accent);
-    }
-    .brand span { font-weight: 500; color: var(--muted); }
-    nav a {
-      font-size: 13px;
-      color: var(--muted);
+    .topbar .logo { font-size: 14px; font-weight: 650; letter-spacing: 0.04em; }
+    .topbar .logo span { font-weight: 400; opacity: 0.7; margin-left: 6px; }
+    .topbar a {
+      color: rgba(255,255,255,0.75);
       text-decoration: none;
-      margin-left: 20px;
+      font-size: 13px;
+      margin-left: 18px;
     }
-    nav a:hover { color: var(--text); }
-    nav a.active { color: var(--text); font-weight: 600; }
+    .topbar a:hover { color: #fff; }
 
-    .page {
-      max-width: 720px;
+    .wrap {
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 32px 20px 64px;
+      padding: 24px 20px 56px;
     }
 
-    .crumb {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
-    .crumb a { color: var(--muted); text-decoration: none; }
-    .crumb a:hover { text-decoration: underline; }
-
-    .hero {
+    /* Status banner */
+    .banner {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 28px 28px 24px;
+      border-radius: 6px;
+      padding: 20px 24px;
       margin-bottom: 16px;
-    }
-    .hero-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-    .hero h1 {
-      font-size: 26px;
-      font-weight: 650;
-      letter-spacing: -0.02em;
-      margin-bottom: 6px;
-    }
-    .hero .tn {
-      font-family: ui-monospace, "Cascadia Code", "Courier New", monospace;
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 20px;
-    }
-    .status-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px 28px;
-      align-items: baseline;
-      padding-top: 18px;
-      border-top: 1px solid var(--border);
+      gap: 16px 32px;
+      align-items: flex-start;
+      justify-content: space-between;
     }
-    .status-main {
-      font-size: 18px;
+    .banner h1 {
+      font-size: 20px;
       font-weight: 650;
-      color: var(--accent);
+      margin-bottom: 4px;
     }
-    .status-sub {
+    .banner .tn {
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
       font-size: 13px;
       color: var(--muted);
     }
+    .banner .status-block { text-align: right; }
+    .banner .status {
+      font-size: 16px;
+      font-weight: 650;
+      color: var(--navy);
+    }
+    .banner .status-meta {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    @media (max-width: 640px) {
+      .banner .status-block { text-align: left; }
+    }
 
-    .grid {
+    /* Layout: map + side */
+    .main-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.4fr 1fr;
       gap: 16px;
       margin-bottom: 16px;
     }
-    @media (max-width: 600px) {
-      .grid { grid-template-columns: 1fr; }
+    @media (max-width: 860px) {
+      .main-grid { grid-template-columns: 1fr; }
     }
 
-    .panel {
+    .card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 4px;
+      border-radius: 6px;
+      overflow: hidden;
     }
-    .panel-h {
-      padding: 12px 18px;
+    .card-h {
+      padding: 11px 16px;
       border-bottom: 1px solid var(--border);
       font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
+      font-weight: 650;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--muted);
+      background: #fafbfc;
     }
-    .panel-b { padding: 18px; }
+    .card-b { padding: 16px; }
 
-    .kv { display: grid; gap: 12px; }
-    .kv-row {
-      display: grid;
-      grid-template-columns: 120px 1fr;
-      gap: 8px;
-      font-size: 13px;
+    #map {
+      height: 420px;
+      width: 100%;
+      background: #e8ecf1;
     }
-    .kv-row .k { color: var(--muted); }
-    .kv-row .v { font-weight: 500; }
+    .map-caption {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+      background: #fafbfc;
+    }
+    .map-caption strong { color: var(--text); font-weight: 600; }
 
-    .progress-block { margin-bottom: 8px; }
-    .progress-meta {
+    .progress-wrap { margin-bottom: 14px; }
+    .progress-labels {
       display: flex;
       justify-content: space-between;
       font-size: 12px;
       color: var(--muted);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .bar {
-      height: 6px;
-      background: #e6e9ef;
-      border-radius: 3px;
+      height: 8px;
+      background: var(--line);
+      border-radius: 4px;
       overflow: hidden;
     }
     .bar-fill {
       height: 100%;
       width: 20%;
-      background: var(--accent);
-      border-radius: 3px;
-      transition: width 0.35s ease;
+      background: var(--navy);
+      border-radius: 4px;
     }
-    .progress-note {
+    .pct-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
       font-size: 13px;
-      color: var(--muted);
-      margin-top: 10px;
     }
+    .pct-row .pct { font-weight: 650; color: var(--navy); }
+    .pct-row .remain { color: var(--muted); }
 
-    .timeline {
-      position: relative;
-      padding-left: 24px;
+    .kv { display: grid; gap: 10px; }
+    .kv-row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 6px;
+      font-size: 13px;
     }
+    .kv-row .k { color: var(--muted); }
+    .kv-row .v { font-weight: 500; }
+
+    .timeline { position: relative; padding-left: 22px; }
     .timeline::before {
       content: "";
       position: absolute;
-      left: 5px;
-      top: 4px;
-      bottom: 4px;
+      left: 4px;
+      top: 6px;
+      bottom: 6px;
       width: 2px;
       background: var(--line);
     }
     .tprog {
       position: absolute;
-      left: 5px;
-      top: 4px;
+      left: 4px;
+      top: 6px;
       width: 2px;
-      background: var(--accent);
+      background: var(--navy);
       z-index: 1;
     }
-    .ti {
-      position: relative;
-      padding-bottom: 18px;
-    }
+    .ti { position: relative; padding-bottom: 16px; }
     .ti:last-child { padding-bottom: 0; }
     .td {
       position: absolute;
-      left: -24px;
-      top: 3px;
+      left: -22px;
+      top: 4px;
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: var(--pending);
-      border: 2px solid var(--surface);
+      background: #c5cad3;
+      border: 2px solid #fff;
       z-index: 2;
     }
-    .ti.done .td { background: var(--done); }
+    .ti.done .td { background: var(--navy); }
     .ti.current .td {
-      background: var(--current);
-      box-shadow: 0 0 0 3px var(--accent-soft);
+      background: var(--navy);
+      box-shadow: 0 0 0 3px rgba(27, 42, 74, 0.18);
     }
-    .ti.pending { opacity: 0.45; }
+    .ti.pending { opacity: 0.4; }
     .tit { font-weight: 600; font-size: 13px; }
-    .ti.current .tit { color: var(--accent); }
-    .til, .titm {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 1px;
-    }
+    .ti.current .tit { color: var(--navy); }
+    .til, .titm { font-size: 12px; color: var(--muted); }
 
-    .actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-    }
+    .actions { margin-top: 14px; }
     .btn {
-      height: 38px;
-      padding: 0 16px;
+      height: 36px;
+      padding: 0 14px;
       font-size: 13px;
       font-weight: 600;
       font-family: inherit;
@@ -243,97 +227,123 @@
       color: var(--text);
     }
     .btn-primary {
-      background: var(--accent);
-      border-color: var(--accent);
+      background: var(--navy);
+      border-color: var(--navy);
       color: #fff;
     }
     .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
-    .source {
-      margin-top: 14px;
+    .note {
       font-size: 12px;
       color: var(--muted);
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
     }
+
     footer {
-      margin-top: 40px;
       text-align: center;
       font-size: 12px;
       color: var(--muted);
+      margin-top: 28px;
+    }
+
+    /* Leaflet marker labels */
+    .map-label {
+      background: var(--navy);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 3px;
+      white-space: nowrap;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    }
+    .map-label.current {
+      background: #b42318;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="brand">Global Express <span>· Tracking</span></div>
-    <nav>
-      <a href="index.html" class="active">Peggy Palmer</a>
+  <div class="topbar">
+    <div class="logo">GLOBAL EXPRESS <span>TRACKING</span></div>
+    <div>
+      <a href="index.html">Peggy Palmer</a>
       <a href="anita.html">Anita Vincent</a>
-    </nav>
-  </header>
-
-  <div class="page">
-    <div class="crumb">
-      <a href="index.html">Tracking</a> / Peggy Palmer
     </div>
+  </div>
 
-    <section class="hero">
-      <div class="hero-label">Primary shipment</div>
-      <h1 id="name">Peggy Palmer</h1>
-      <div class="tn" id="tn">11881-87236-402382053</div>
-      <div class="status-row">
-        <div>
-          <div class="status-main" id="status">In Transit</div>
-          <div class="status-sub" id="statusDetail">Loading status…</div>
-        </div>
-        <div class="status-sub" id="progressLabel">Progress —</div>
+  <div class="wrap">
+    <div class="banner">
+      <div>
+        <h1>Peggy Palmer</h1>
+        <div class="tn" id="tn">11881-87236-402382053</div>
       </div>
-    </section>
-
-    <div class="grid">
-      <div class="panel">
-        <div class="panel-h">Ship to</div>
-        <div class="panel-b">
-          <div class="kv">
-            <div class="kv-row"><span class="k">Recipient</span><span class="v" id="toName">Peggy Palmer</span></div>
-            <div class="kv-row"><span class="k">Address</span><span class="v" id="toAddr">1201 Thomas Blvd<br>Elizabethton, TN 37643</span></div>
-            <div class="kv-row"><span class="k">Phone</span><span class="v" id="toPhone">423.491-0319</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-h">Shipment details</div>
-        <div class="panel-b">
-          <div class="kv">
-            <div class="kv-row"><span class="k">Origin</span><span class="v">Houston, TX</span></div>
-            <div class="kv-row"><span class="k">Destination</span><span class="v">Elizabethton, TN</span></div>
-            <div class="kv-row"><span class="k">Service</span><span class="v" id="carrier">Ground</span></div>
-            <div class="kv-row"><span class="k">Est. delivery</span><span class="v" id="eta">—</span></div>
-          </div>
-        </div>
+      <div class="status-block">
+        <div class="status" id="status">In Transit</div>
+        <div class="status-meta" id="statusMeta">Early leg · approximately 20% complete</div>
       </div>
     </div>
 
-    <div class="panel" style="margin-bottom:16px">
-      <div class="panel-h">Route progress</div>
-      <div class="panel-b">
-        <div class="progress-block">
-          <div class="progress-meta">
-            <span>Houston, TX</span>
-            <span>Elizabethton, TN</span>
+    <div class="main-grid">
+      <!-- MAP -->
+      <div class="card">
+        <div class="card-h">Driver position</div>
+        <div id="map"></div>
+        <div class="map-caption">
+          <strong id="mapLoc">Lake Charles, LA area</strong>
+          <span id="mapNote"> — approximately 3 hours east of Houston origin. Second checkpoint on route to Elizabethton, TN.</span>
+        </div>
+      </div>
+
+      <!-- DETAILS -->
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <div class="card-h">Route progress</div>
+          <div class="card-b">
+            <div class="progress-wrap">
+              <div class="progress-labels">
+                <span>Houston, TX</span>
+                <span>Elizabethton, TN</span>
+              </div>
+              <div class="bar"><div class="bar-fill" id="bar" style="width:20%"></div></div>
+              <div class="pct-row">
+                <span class="pct" id="pct">20% complete</span>
+                <span class="remain" id="remain">80% remaining</span>
+              </div>
+            </div>
+            <div class="kv">
+              <div class="kv-row"><span class="k">Origin</span><span class="v">Houston, TX</span></div>
+              <div class="kv-row"><span class="k">Current</span><span class="v" id="currentLoc">Lake Charles, LA corridor</span></div>
+              <div class="kv-row"><span class="k">Destination</span><span class="v">Elizabethton, TN</span></div>
+              <div class="kv-row"><span class="k">Est. delivery</span><span class="v" id="eta">—</span></div>
+            </div>
           </div>
-          <div class="bar"><div class="bar-fill" id="bar" style="width:20%"></div></div>
-          <p class="progress-note" id="locationNote">Early transit · Texas corridor</p>
+        </div>
+
+        <div class="card">
+          <div class="card-h">Ship to</div>
+          <div class="card-b">
+            <div class="kv">
+              <div class="kv-row"><span class="k">Recipient</span><span class="v">Peggy Palmer</span></div>
+              <div class="kv-row"><span class="k">Address</span><span class="v">1201 Thomas Blvd<br>Elizabethton, TN 37643</span></div>
+              <div class="kv-row"><span class="k">Phone</span><span class="v">423.491-0319</span></div>
+              <div class="kv-row"><span class="k">Service</span><span class="v" id="carrier">Ground</span></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="panel">
-      <div class="panel-h">Tracking history</div>
-      <div class="panel-b">
+    <div class="card">
+      <div class="card-h">Tracking history</div>
+      <div class="card-b">
         <div class="timeline" id="timeline"></div>
-        <div class="source" id="source">—</div>
+        <p class="note" id="source">
+          Position is estimated from dispatch records: late departure from Houston; approximately three hours of driving completed on the first leg. Package remains on the early segment of the Texas–Tennessee corridor.
+        </p>
         <div class="actions">
-          <button class="btn btn-primary" id="btnRefresh" onclick="load()">Refresh status</button>
+          <button class="btn btn-primary" id="btnRefresh" onclick="refresh()">Refresh status</button>
         </div>
       </div>
     </div>
@@ -341,13 +351,87 @@
     <footer>Global Express · Shipment tracking · Updated <span id="asof">—</span></footer>
   </div>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
+    // Houston → ~3 hours east (Lake Charles, LA) → Elizabethton, TN
+    const ORIGIN = { lat: 29.7604, lng: -95.3698, label: 'Houston, TX (Origin)' };
+    const CURRENT = { lat: 30.2266, lng: -93.2174, label: 'Current position' }; // Lake Charles area
+    const DEST = { lat: 36.3487, lng: -82.2107, label: 'Elizabethton, TN' };
+
     const TN = '11881-87236-402382053';
+
+    let map, driverMarker;
+
+    function initMap() {
+      map = L.map('map', {
+        scrollWheelZoom: false,
+        zoomControl: true
+      }).setView([32.2, -88.5], 6);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap',
+        maxZoom: 18
+      }).addTo(map);
+
+      // Route line: origin → current → dest (dashed after current)
+      const driven = L.polyline(
+        [[ORIGIN.lat, ORIGIN.lng], [CURRENT.lat, CURRENT.lng]],
+        { color: '#1b2a4a', weight: 4, opacity: 0.9 }
+      ).addTo(map);
+
+      const remaining = L.polyline(
+        [[CURRENT.lat, CURRENT.lng], [DEST.lat, DEST.lng]],
+        { color: '#98a2b3', weight: 3, opacity: 0.75, dashArray: '8 8' }
+      ).addTo(map);
+
+      const originIcon = L.divIcon({
+        className: '',
+        html: '<div class="map-label">Origin</div>',
+        iconSize: [56, 24],
+        iconAnchor: [28, 12]
+      });
+      const currentIcon = L.divIcon({
+        className: '',
+        html: '<div class="map-label current">Driver</div>',
+        iconSize: [58, 24],
+        iconAnchor: [29, 12]
+      });
+      const destIcon = L.divIcon({
+        className: '',
+        html: '<div class="map-label">Destination</div>',
+        iconSize: [90, 24],
+        iconAnchor: [45, 12]
+      });
+
+      L.marker([ORIGIN.lat, ORIGIN.lng], { icon: originIcon }).addTo(map)
+        .bindPopup('<strong>Houston, TX</strong><br>Origin facility');
+
+      driverMarker = L.marker([CURRENT.lat, CURRENT.lng], { icon: currentIcon }).addTo(map)
+        .bindPopup('<strong>Current position</strong><br>Lake Charles, LA corridor<br>Approx. 3 hours from Houston<br>~20% of total route');
+
+      L.marker([DEST.lat, DEST.lng], { icon: destIcon }).addTo(map)
+        .bindPopup('<strong>Elizabethton, TN</strong><br>1201 Thomas Blvd<br>Peggy Palmer');
+
+      // Fit bounds with padding
+      map.fitBounds(
+        L.latLngBounds([
+          [ORIGIN.lat, ORIGIN.lng],
+          [CURRENT.lat, CURRENT.lng],
+          [DEST.lat, DEST.lng]
+        ]),
+        { padding: [40, 40] }
+      );
+
+      // Emphasize driver area slightly
+      setTimeout(() => {
+        map.panTo([CURRENT.lat, CURRENT.lng], { animate: true });
+      }, 600);
+    }
 
     function renderTimeline(events) {
       const root = document.getElementById('timeline');
       if (!events || !events.length) {
-        root.innerHTML = '<p style="color:var(--muted)">No tracking events available.</p>';
+        root.innerHTML = '<p style="color:var(--muted)">No events.</p>';
         return;
       }
       let html = '<div class="tprog" id="prog"></div>';
@@ -367,7 +451,7 @@
       });
     }
 
-    async function load() {
+    async function refresh() {
       const btn = document.getElementById('btnRefresh');
       btn.disabled = true;
       btn.textContent = 'Updating…';
@@ -376,37 +460,38 @@
         const d = await res.json();
         const prog = d.progress != null ? d.progress : 20;
 
-        document.getElementById('name').textContent = d.name || 'Peggy Palmer';
         document.getElementById('tn').textContent = d.trackingNumber || TN;
         document.getElementById('status').textContent = d.status || 'In Transit';
-        document.getElementById('statusDetail').textContent = d.statusDetail || d.currentLocation || '';
-        document.getElementById('progressLabel').textContent = 'Progress · ' + prog + '%';
+        document.getElementById('statusMeta').textContent =
+          (d.statusDetail || 'Early leg') + ' · approximately ' + prog + '% complete';
         document.getElementById('bar').style.width = prog + '%';
-        document.getElementById('locationNote').textContent =
-          (d.currentLocation || d.statusDetail || 'In transit') +
-          (d.lastScan ? ' · Last scan ' + d.lastScan : '');
-        document.getElementById('carrier').textContent = d.carrier || 'Ground';
+        document.getElementById('pct').textContent = prog + '% complete';
+        document.getElementById('remain').textContent = (100 - prog) + '% remaining';
         document.getElementById('eta').textContent = d.eta || '—';
-        document.getElementById('source').textContent =
-          (d.live ? 'Source: EasyPost (live) · ' : 'Source: ') + (d.source || 'Registered network');
+        document.getElementById('carrier').textContent = d.carrier || 'Ground';
         document.getElementById('asof').textContent = new Date().toLocaleString('en-US');
 
-        if (d.street || d.city) {
-          const line = [d.street, [d.city, d.state, d.zip].filter(Boolean).join(', ')].filter(Boolean);
-          document.getElementById('toAddr').innerHTML = line.join('<br>');
+        if (d.currentLocation) {
+          document.getElementById('currentLoc').textContent = d.currentLocation;
+          document.getElementById('mapLoc').textContent = d.currentLocation;
         }
-        if (d.phone) document.getElementById('toPhone').textContent = d.phone;
+
+        document.getElementById('source').textContent =
+          (d.live ? 'Data source: EasyPost (live). ' : '') +
+          (d.source || 'Registered network') +
+          '. Position reflects approximately three hours of driving from Houston on the opening leg; about 80% of the route to Elizabethton, TN remains.';
 
         renderTimeline(d.events || []);
       } catch (e) {
-        document.getElementById('statusDetail').textContent = 'Unable to refresh. Showing last known view.';
+        document.getElementById('statusMeta').textContent = 'Status refresh unavailable · showing map position';
       } finally {
         btn.disabled = false;
         btn.textContent = 'Refresh status';
       }
     }
 
-    load();
+    initMap();
+    refresh();
   </script>
 </body>
 </html>

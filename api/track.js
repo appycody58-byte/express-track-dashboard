@@ -1,4 +1,4 @@
-// Vercel serverless — EasyPost Tracker + early-route (~20%) fallback for registered TNs
+// Vercel serverless — EasyPost Tracker + early-route (~20%) fallback
 
 const REGISTRY = {
   '1188187236402382053': {
@@ -10,16 +10,6 @@ const REGISTRY = {
     phone: '423.491-0319',
     displayTn: '11881-87236-402382053',
     destLabel: 'Elizabethton, TN'
-  },
-  '4829155307918274036': {
-    name: 'Anita Vincent',
-    street: '4817 Friendly St',
-    city: '',
-    state: '',
-    zip: '',
-    phone: '',
-    displayTn: '48291-55307-918274036',
-    destLabel: '4817 Friendly St'
   }
 };
 
@@ -45,7 +35,7 @@ function dayStr(d) {
   });
 }
 
-/** Early route (~20%) — ~7 hours from Houston, Texarkana corridor, checkpoint 2 */
+/** Early route (~20%) — ~7 hours from Houston, Texarkana corridor */
 function earlyRouteFallback(reg, trackingNumber) {
   const now = new Date();
   const t0 = new Date(now.getTime() - 36 * 3600000);

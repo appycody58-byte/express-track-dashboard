@@ -34,16 +34,15 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
       position: sticky;
       top: 0;
       z-index: 20;
     }
-    .logo {
-      font-weight: 700;
-      font-size: 18px;
-      letter-spacing: -0.3px;
-    }
+    .logo { font-weight: 700; font-size: 18px; letter-spacing: -0.3px; }
     .logo span { color: var(--accent); }
+    .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .badge-live {
       font-size: 11px;
       font-weight: 600;
@@ -55,209 +54,128 @@
       padding: 4px 10px;
       border-radius: 20px;
     }
-    .wrap {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 28px 20px 60px;
-    }
-    h1 {
-      font-size: 22px;
-      font-weight: 650;
-      margin-bottom: 6px;
-    }
-    .sub {
-      color: var(--muted);
-      margin-bottom: 28px;
-      font-size: 14px;
-    }
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 28px;
-    }
-    @media (max-width: 640px) {
-      .stats { grid-template-columns: 1fr; }
-    }
-    .stat {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px 18px;
-    }
-    .stat .label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-    .stat .value {
-      font-size: 22px;
-      font-weight: 700;
-    }
-    .stat .hint {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-    .cards {
-      display: grid;
-      gap: 20px;
-    }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .card-head {
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: flex-start;
-      justify-content: space-between;
-    }
-    .who {
-      font-size: 17px;
-      font-weight: 650;
-    }
-    .addr {
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 2px;
-    }
-    .tn {
-      font-family: ui-monospace, "Courier New", monospace;
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-    .status-pill {
+    .btn {
+      height: 34px;
+      padding: 0 14px;
+      border-radius: 6px;
       font-size: 12px;
       font-weight: 600;
-      padding: 6px 12px;
-      border-radius: 20px;
-      white-space: nowrap;
+      font-family: inherit;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+    }
+    .btn:hover { border-color: var(--accent); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 28px 20px 60px; }
+    h1 { font-size: 22px; font-weight: 650; margin-bottom: 6px; }
+    .sub { color: var(--muted); margin-bottom: 20px; font-size: 14px; }
+    .lookup {
+      display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .lookup input {
+      flex: 1; min-width: 200px; height: 38px; padding: 0 12px;
+      border-radius: 6px; border: 1px solid var(--border);
+      background: var(--surface); color: var(--text); font-size: 13px; font-family: inherit;
+    }
+    .lookup .btn-p {
+      background: var(--accent); border-color: var(--accent); color: #fff;
+    }
+    .stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px;
+    }
+    @media (max-width: 640px) { .stats { grid-template-columns: 1fr; } }
+    .stat {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 18px;
+    }
+    .stat .label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px;
+      color: var(--muted); margin-bottom: 4px;
+    }
+    .stat .value { font-size: 22px; font-weight: 700; }
+    .stat .hint { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .cards { display: grid; gap: 20px; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .card-head {
+      padding: 18px 20px; border-bottom: 1px solid var(--border);
+      display: flex; flex-wrap: wrap; gap: 12px;
+      align-items: flex-start; justify-content: space-between;
+    }
+    .who { font-size: 17px; font-weight: 650; }
+    .addr { color: var(--muted); font-size: 13px; margin-top: 2px; }
+    .tn {
+      font-family: ui-monospace, "Courier New", monospace;
+      font-size: 12px; color: var(--muted); margin-top: 6px;
+    }
+    .status-pill {
+      font-size: 12px; font-weight: 600; padding: 6px 12px;
+      border-radius: 20px; white-space: nowrap;
     }
     .status-pill.mid {
-      background: rgba(59, 130, 246, 0.15);
-      color: #60a5fa;
+      background: rgba(59, 130, 246, 0.15); color: #60a5fa;
       border: 1px solid rgba(59, 130, 246, 0.35);
+    }
+    .status-pill.live {
+      background: rgba(34, 197, 94, 0.12); color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.35);
     }
     .card-body { padding: 20px; }
     .progress-wrap { margin-bottom: 22px; }
     .progress-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 8px;
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: var(--muted); margin-bottom: 8px;
     }
     .bar {
-      height: 8px;
-      background: var(--surface2);
-      border-radius: 4px;
-      overflow: hidden;
-      position: relative;
+      height: 8px; background: var(--surface2); border-radius: 4px;
+      overflow: visible; position: relative;
     }
     .bar-fill {
-      height: 100%;
-      border-radius: 4px;
-      width: 50%;
+      height: 100%; border-radius: 4px; width: 50%;
       background: linear-gradient(90deg, var(--accent), #60a5fa);
-      position: relative;
+      position: relative; transition: width 0.4s ease;
     }
     .bar-fill::after {
-      content: "";
-      position: absolute;
-      right: -6px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #fff;
-      border: 3px solid var(--accent);
+      content: ""; position: absolute; right: -6px; top: 50%;
+      transform: translateY(-50%); width: 14px; height: 14px;
+      border-radius: 50%; background: #fff; border: 3px solid var(--accent);
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
     }
-    .pct {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent);
-      margin-top: 8px;
+    .pct { font-size: 12px; font-weight: 600; color: var(--accent); margin-top: 8px; }
+    .source-tag {
+      font-size: 11px; color: var(--muted); margin-top: 4px;
     }
     .route-grid {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 22px;
-      padding: 14px;
-      background: var(--surface2);
-      border-radius: 8px;
+      display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px;
+      align-items: center; margin-bottom: 22px; padding: 14px;
+      background: var(--surface2); border-radius: 8px;
     }
-    .route-grid .city {
-      font-weight: 600;
-      font-size: 14px;
-    }
-    .route-grid .subc {
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .route-grid .arrow {
-      color: var(--muted);
-      font-size: 18px;
-      text-align: center;
-    }
-    .timeline {
-      position: relative;
-      padding-left: 22px;
-    }
+    .route-grid .city { font-weight: 600; font-size: 14px; }
+    .route-grid .subc { font-size: 12px; color: var(--muted); }
+    .route-grid .arrow { color: var(--muted); font-size: 18px; text-align: center; }
+    .timeline { position: relative; padding-left: 22px; }
     .timeline::before {
-      content: "";
-      position: absolute;
-      left: 5px;
-      top: 6px;
-      bottom: 6px;
-      width: 2px;
-      background: var(--border);
+      content: ""; position: absolute; left: 5px; top: 6px; bottom: 6px;
+      width: 2px; background: var(--border);
     }
     .tprog {
-      position: absolute;
-      left: 5px;
-      top: 6px;
-      width: 2px;
-      background: var(--accent);
-      z-index: 1;
+      position: absolute; left: 5px; top: 6px; width: 2px;
+      background: var(--accent); z-index: 1;
     }
-    .ti {
-      position: relative;
-      padding-bottom: 16px;
-    }
+    .ti { position: relative; padding-bottom: 16px; }
     .ti:last-child { padding-bottom: 0; }
     .td {
-      position: absolute;
-      left: -22px;
-      top: 4px;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--border);
-      border: 2px solid var(--surface);
-      z-index: 2;
+      position: absolute; left: -22px; top: 4px; width: 10px; height: 10px;
+      border-radius: 50%; background: var(--border);
+      border: 2px solid var(--surface); z-index: 2;
     }
-    .ti.done .td {
-      background: var(--accent);
-      border-color: var(--surface);
-    }
+    .ti.done .td { background: var(--accent); border-color: var(--surface); }
     .ti.current .td {
-      width: 12px;
-      height: 12px;
-      left: -23px;
-      background: var(--accent);
+      width: 12px; height: 12px; left: -23px; background: var(--accent);
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
     }
     .ti.pending { opacity: 0.4; }
@@ -266,200 +184,304 @@
     .til { font-size: 13px; color: var(--muted); }
     .titm { font-size: 12px; color: var(--muted); }
     .meta-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px 20px;
-      margin-top: 18px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px;
+      margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border);
       font-size: 13px;
     }
     .meta-row .k { color: var(--muted); }
     .meta-row .v { font-weight: 500; text-align: right; }
-    footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 36px;
-    }
+    footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 36px; }
     .tag-peggy { color: var(--peggy); }
     .tag-anita { color: var(--anita); }
+    .err-banner {
+      display: none; background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35); color: #fbbf24;
+      padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; font-size: 13px;
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="logo">Express<span>Track</span></div>
-    <div class="badge-live">In transit · Mid-route</div>
+    <div class="header-right">
+      <div class="badge-live" id="headerBadge">In transit · Mid-route</div>
+      <button class="btn" id="btnRefresh" onclick="refreshAll()">Refresh</button>
+    </div>
   </header>
 
   <div class="wrap">
     <h1>Shipment dashboard</h1>
-    <p class="sub">Active packages for Peggy Palmer and Anita Vincent — both approximately halfway to destination.</p>
+    <p class="sub">Peggy Palmer &amp; Anita Vincent — mid-route by default. Real carrier numbers use EasyPost Tracker when configured.</p>
+
+    <div class="lookup">
+      <input id="lookupTn" placeholder="Track any number (EasyPost live or registered)" value="">
+      <button class="btn btn-p" onclick="lookupOne()">Track</button>
+    </div>
+    <div class="err-banner" id="errBanner"></div>
 
     <div class="stats">
       <div class="stat">
         <div class="label">Active shipments</div>
-        <div class="value">2</div>
-        <div class="hint">Both in network</div>
+        <div class="value" id="statCount">2</div>
+        <div class="hint">On dashboard</div>
       </div>
       <div class="stat">
         <div class="label">Route progress</div>
-        <div class="value">~50%</div>
-        <div class="hint">Half of the way</div>
+        <div class="value" id="statProg">~50%</div>
+        <div class="hint" id="statProgHint">Half of the way</div>
       </div>
       <div class="stat">
-        <div class="label">Status</div>
-        <div class="value" style="font-size:18px">In Transit</div>
-        <div class="hint">Hub scan complete</div>
+        <div class="label">Data source</div>
+        <div class="value" style="font-size:15px" id="statSource">Network</div>
+        <div class="hint" id="statSourceHint">EasyPost when keyed</div>
       </div>
     </div>
 
-    <div class="cards">
-      <!-- Peggy Palmer -->
-      <article class="card" id="card-peggy">
+    <div class="cards" id="cards">
+      <article class="card" id="card-peggy" data-tn="11881-87236-402382053">
         <div class="card-head">
           <div>
-            <div class="who tag-peggy">Peggy Palmer</div>
-            <div class="addr">1201 Thomas Blvd · Elizabethton, TN 37643</div>
-            <div class="tn">11881-87236-402382053</div>
+            <div class="who tag-peggy" id="peggy-name">Peggy Palmer</div>
+            <div class="addr" id="peggy-addr">1201 Thomas Blvd · Elizabethton, TN 37643</div>
+            <div class="tn" id="peggy-tn">11881-87236-402382053</div>
           </div>
-          <span class="status-pill mid">In Transit · ~50%</span>
+          <span class="status-pill mid" id="peggy-pill">In Transit · ~50%</span>
         </div>
         <div class="card-body">
           <div class="progress-wrap">
             <div class="progress-labels">
               <span>Houston, TX</span>
-              <span>Elizabethton, TN</span>
+              <span id="peggy-dest-label">Elizabethton, TN</span>
             </div>
-            <div class="bar"><div class="bar-fill"></div></div>
-            <div class="pct">Halfway · Departed regional hub</div>
+            <div class="bar"><div class="bar-fill" id="peggy-bar" style="width:50%"></div></div>
+            <div class="pct" id="peggy-pct">Halfway · Regional hub</div>
+            <div class="source-tag" id="peggy-source">Loading…</div>
           </div>
-
           <div class="route-grid">
-            <div>
-              <div class="city">Houston, TX</div>
-              <div class="subc">Origin hub</div>
-            </div>
+            <div><div class="city">Houston, TX</div><div class="subc">Origin hub</div></div>
             <div class="arrow">→</div>
             <div style="text-align:right">
-              <div class="city">Elizabethton, TN</div>
+              <div class="city" id="peggy-dest-city">Elizabethton, TN</div>
               <div class="subc">Destination</div>
             </div>
           </div>
-
           <div class="timeline" id="tl-peggy"></div>
-
           <div class="meta-row">
-            <div class="k">Service</div><div class="v">Ground</div>
-            <div class="k">Phone</div><div class="v">423.491-0319</div>
+            <div class="k">Service</div><div class="v" id="peggy-carrier">Ground</div>
+            <div class="k">Phone</div><div class="v" id="peggy-phone">423.491-0319</div>
             <div class="k">Last scan</div><div class="v" id="peggy-scan">—</div>
             <div class="k">Est. delivery</div><div class="v" id="peggy-eta">—</div>
           </div>
         </div>
       </article>
 
-      <!-- Anita Vincent -->
-      <article class="card" id="card-anita">
+      <article class="card" id="card-anita" data-tn="48291-55307-918274036">
         <div class="card-head">
           <div>
-            <div class="who tag-anita">Anita Vincent</div>
-            <div class="addr">4817 Friendly St</div>
-            <div class="tn">48291-55307-918274036</div>
+            <div class="who tag-anita" id="anita-name">Anita Vincent</div>
+            <div class="addr" id="anita-addr">4817 Friendly St</div>
+            <div class="tn" id="anita-tn">48291-55307-918274036</div>
           </div>
-          <span class="status-pill mid">In Transit · ~50%</span>
+          <span class="status-pill mid" id="anita-pill">In Transit · ~50%</span>
         </div>
         <div class="card-body">
           <div class="progress-wrap">
             <div class="progress-labels">
               <span>Houston, TX</span>
-              <span>Destination</span>
+              <span id="anita-dest-label">Destination</span>
             </div>
-            <div class="bar"><div class="bar-fill"></div></div>
-            <div class="pct">Halfway · On the road to destination region</div>
+            <div class="bar"><div class="bar-fill" id="anita-bar" style="width:50%"></div></div>
+            <div class="pct" id="anita-pct">Halfway · On the road</div>
+            <div class="source-tag" id="anita-source">Loading…</div>
           </div>
-
           <div class="route-grid">
-            <div>
-              <div class="city">Houston, TX</div>
-              <div class="subc">Origin hub</div>
-            </div>
+            <div><div class="city">Houston, TX</div><div class="subc">Origin hub</div></div>
             <div class="arrow">→</div>
             <div style="text-align:right">
-              <div class="city">4817 Friendly St</div>
+              <div class="city" id="anita-dest-city">4817 Friendly St</div>
               <div class="subc">Destination</div>
             </div>
           </div>
-
           <div class="timeline" id="tl-anita"></div>
-
           <div class="meta-row">
-            <div class="k">Service</div><div class="v">Ground</div>
+            <div class="k">Service</div><div class="v" id="anita-carrier">Ground</div>
             <div class="k">Recipient</div><div class="v">Anita Vincent</div>
             <div class="k">Last scan</div><div class="v" id="anita-scan">—</div>
             <div class="k">Est. delivery</div><div class="v" id="anita-eta">—</div>
           </div>
         </div>
       </article>
+
+      <article class="card" id="card-lookup" style="display:none">
+        <div class="card-head">
+          <div>
+            <div class="who" id="lookup-name">Lookup</div>
+            <div class="addr" id="lookup-addr"></div>
+            <div class="tn" id="lookup-tn"></div>
+          </div>
+          <span class="status-pill mid" id="lookup-pill">—</span>
+        </div>
+        <div class="card-body">
+          <div class="progress-wrap">
+            <div class="progress-labels"><span>Origin</span><span>Destination</span></div>
+            <div class="bar"><div class="bar-fill" id="lookup-bar" style="width:0%"></div></div>
+            <div class="pct" id="lookup-pct"></div>
+            <div class="source-tag" id="lookup-source"></div>
+          </div>
+          <div class="timeline" id="tl-lookup"></div>
+          <div class="meta-row">
+            <div class="k">Carrier</div><div class="v" id="lookup-carrier">—</div>
+            <div class="k">Live</div><div class="v" id="lookup-live">—</div>
+            <div class="k">Last scan</div><div class="v" id="lookup-scan">—</div>
+            <div class="k">Est. delivery</div><div class="v" id="lookup-eta">—</div>
+          </div>
+        </div>
+      </article>
     </div>
 
     <footer>
-      ExpressTrack dashboard · Mid-route view · Updated <span id="asof"></span>
+      ExpressTrack · EasyPost Tracker when configured · Updated <span id="asof">—</span>
     </footer>
   </div>
 
   <script>
-    function fmt(d) {
-      return d.toLocaleString('en-US', {
-        month: 'numeric', day: 'numeric', year: '2-digit',
-        hour: 'numeric', minute: '2-digit'
-      });
+    const SHIPMENTS = [
+      { key: 'peggy', tn: '11881-87236-402382053' },
+      { key: 'anita', tn: '48291-55307-918274036' }
+    ];
+
+    function showErr(msg) {
+      const el = document.getElementById('errBanner');
+      el.style.display = msg ? 'block' : 'none';
+      el.textContent = msg || '';
     }
-    function dayStr(d) {
-      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    }
 
-    const now = new Date();
-    // Half-way timeline: created earlier today / yesterday, currently at mid hub
-    const t0 = new Date(now.getTime() - 18 * 3600000); // label ~18h ago
-    const t1 = new Date(now.getTime() - 14 * 3600000); // picked up
-    const t2 = new Date(now.getTime() - 8 * 3600000);  // origin facility
-    const t3 = new Date(now.getTime() - 2 * 3600000);  // mid-route hub (current)
-    const eta = new Date(now.getTime() + 30 * 3600000); // ~1.25 days out
-
-    document.getElementById('asof').textContent = fmt(now);
-    document.getElementById('peggy-scan').textContent = fmt(t3);
-    document.getElementById('anita-scan').textContent = fmt(t3);
-    document.getElementById('peggy-eta').textContent = dayStr(eta);
-    document.getElementById('anita-eta').textContent = dayStr(eta);
-
-    function renderTimeline(elId, destLabel) {
-      const events = [
-        { title: 'Label Created', loc: 'Houston, TX US', time: fmt(t0), state: 'done' },
-        { title: 'Picked Up', loc: 'Houston, TX', time: fmt(t1), state: 'done' },
-        { title: 'Departed Origin Facility', loc: 'Houston, TX', time: fmt(t2), state: 'done' },
-        { title: 'Arrived at Regional Hub', loc: 'In transit · network hub', time: fmt(t3), state: 'current' },
-        { title: 'Out for Delivery', loc: destLabel, time: '', state: 'pending' },
-        { title: 'Delivered', loc: destLabel, time: '', state: 'pending' }
-      ];
+    function renderTimeline(elId, events) {
+      const root = document.getElementById(elId);
+      if (!events || !events.length) {
+        root.innerHTML = '<p style="color:var(--muted);font-size:13px">No events</p>';
+        return;
+      }
       let html = '<div class="tprog" id="prog-' + elId + '"></div>';
       events.forEach(e => {
-        html += `<div class="ti ${e.state}"><div class="td"></div>` +
-          `<div class="tit">${e.title}</div>` +
+        const st = e.state || 'done';
+        html += `<div class="ti ${st}"><div class="td"></div>` +
+          `<div class="tit">${e.title || 'Update'}</div>` +
           (e.loc ? `<div class="til">${e.loc}</div>` : '') +
           (e.time ? `<div class="titm">${e.time}</div>` : '') +
           `</div>`;
       });
-      const root = document.getElementById(elId);
       root.innerHTML = html;
       requestAnimationFrame(() => {
-        const cur = root.querySelector('.ti.current');
+        const cur = root.querySelector('.ti.current') || root.querySelector('.ti.done');
         const prog = document.getElementById('prog-' + elId);
         if (cur && prog) prog.style.height = (cur.offsetTop + 6) + 'px';
       });
     }
 
-    renderTimeline('tl-peggy', 'Elizabethton, TN');
-    renderTimeline('tl-anita', '4817 Friendly St');
+    function applyCard(prefix, data) {
+      const prog = data.progress != null ? data.progress : 50;
+      const bar = document.getElementById(prefix + '-bar');
+      if (bar) bar.style.width = prog + '%';
+
+      const pill = document.getElementById(prefix + '-pill');
+      if (pill) {
+        pill.textContent = (data.status || 'In Transit') + ' · ~' + prog + '%';
+        pill.className = 'status-pill ' + (data.live ? 'live' : 'mid');
+      }
+
+      const pct = document.getElementById(prefix + '-pct');
+      if (pct) pct.textContent = (data.statusDetail || data.status || '') + (prog === 50 ? ' · Halfway' : '');
+
+      const src = document.getElementById(prefix + '-source');
+      if (src) src.textContent = (data.live ? 'Live · ' : '') + (data.source || '');
+
+      const scan = document.getElementById(prefix + '-scan');
+      if (scan) scan.textContent = data.lastScan || '—';
+
+      const eta = document.getElementById(prefix + '-eta');
+      if (eta) eta.textContent = data.eta || '—';
+
+      const carrier = document.getElementById(prefix + '-carrier');
+      if (carrier) carrier.textContent = data.carrier || 'Ground';
+
+      if (data.name && document.getElementById(prefix + '-name')) {
+        document.getElementById(prefix + '-name').textContent = data.name;
+      }
+      if (data.trackingNumber && document.getElementById(prefix + '-tn')) {
+        document.getElementById(prefix + '-tn').textContent = data.trackingNumber;
+      }
+
+      renderTimeline('tl-' + prefix, data.events || []);
+    }
+
+    async function fetchTrack(tn) {
+      const res = await fetch('/api/track?number=' + encodeURIComponent(tn));
+      if (!res.ok) throw new Error('Track request failed');
+      return res.json();
+    }
+
+    async function refreshAll() {
+      const btn = document.getElementById('btnRefresh');
+      btn.disabled = true;
+      btn.textContent = 'Refreshing…';
+      showErr('');
+      let anyLive = false;
+      let avgProg = 0;
+      let sources = new Set();
+
+      try {
+        for (const s of SHIPMENTS) {
+          try {
+            const data = await fetchTrack(s.tn);
+            applyCard(s.key, data);
+            if (data.live) anyLive = true;
+            avgProg += data.progress || 50;
+            if (data.source) sources.add(data.source);
+          } catch (e) {
+            document.getElementById(s.key + '-source').textContent = 'Error · using last view';
+          }
+        }
+        avgProg = Math.round(avgProg / SHIPMENTS.length);
+        document.getElementById('statProg').textContent = '~' + avgProg + '%';
+        document.getElementById('statProgHint').textContent = avgProg === 50 ? 'Half of the way' : 'From tracker';
+        document.getElementById('statSource').textContent = anyLive ? 'EasyPost' : 'Network';
+        document.getElementById('statSourceHint').textContent = [...sources].slice(0, 2).join(' · ') || '—';
+        document.getElementById('headerBadge').textContent = anyLive
+          ? 'Live · EasyPost'
+          : 'In transit · Mid-route';
+        document.getElementById('asof').textContent = new Date().toLocaleString('en-US');
+      } catch (e) {
+        showErr(e.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Refresh';
+      }
+    }
+
+    async function lookupOne() {
+      const tn = (document.getElementById('lookupTn').value || '').trim();
+      if (!tn) return;
+      showErr('');
+      const card = document.getElementById('card-lookup');
+      card.style.display = 'block';
+      document.getElementById('lookup-source').textContent = 'Loading…';
+      try {
+        const data = await fetchTrack(tn);
+        document.getElementById('lookup-name').textContent = data.name || data.carrier || 'Shipment';
+        document.getElementById('lookup-addr').textContent = [data.street, data.city, data.state, data.zip].filter(Boolean).join(' · ');
+        document.getElementById('lookup-tn').textContent = data.trackingNumber || tn;
+        applyCard('lookup', data);
+        document.getElementById('lookup-live').textContent = data.live ? 'Yes' : 'No';
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (e) {
+        showErr(e.message);
+        document.getElementById('lookup-source').textContent = 'Failed';
+      }
+    }
+
+    // Initial load
+    refreshAll();
   </script>
 </body>
 </html>

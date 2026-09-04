@@ -1,42 +1,26 @@
-# Express Track Dashboard
+# Global Express Tracking
 
-Standalone **mid-route** tracking dashboard for **Peggy Palmer** and **Anita Vincent**, with **EasyPost Tracker** live refresh when a real carrier tracking number is available.
+Professional shipment tracking pages. **Peggy Palmer is the primary shipment** (home page). Anita Vincent has a separate page.
 
-## Shipments (~50% · half of the way)
+## Pages
 
-| Recipient | Tracking | Destination | Default status |
-|-----------|----------|-------------|----------------|
-| Peggy Palmer | `11881-87236-402382053` | 1201 Thomas Blvd, Elizabethton, TN 37643 | In Transit · Regional hub |
-| Anita Vincent | `48291-55307-918274036` | 4817 Friendly St | In Transit · Regional hub |
+| Page | URL path | Tracking |
+|------|----------|----------|
+| **Peggy Palmer (primary)** | `/` or `/index.html` | `11881-87236-402382053` |
+| Anita Vincent | `/anita.html` | `48291-55307-918274036` |
 
-## EasyPost integration
+## Status model (registered network)
 
-1. Create an API key at [EasyPost](https://www.easypost.com/account/api-keys)
-2. On Vercel: **Project → Settings → Environment Variables**
-   - Name: `EASYPOST_API_KEY`
-   - Value: your test or production key
-3. Redeploy
+Early transit **~20%** — East Texas corridor after a late departure from Houston toward Tennessee.
 
-### Behavior
-
-| Tracking number | Result |
-|-----------------|--------|
-| Peggy / Anita registered TNs | Mid-route timeline (~50%) unless EasyPost has live events |
-| Real UPS / FedEx / USPS / etc. | Live EasyPost Tracker events + progress |
-| Unknown + no key | “Not found” message |
-
-### API
+## API
 
 ```
 GET /api/track?number=11881-87236-402382053
 ```
 
-Response includes `status`, `progress`, `events[]`, `live`, `source`, `lastScan`, `eta`.
+Optional: set `EASYPOST_API_KEY` on Vercel for live carrier tracking on real numbers.
 
-## Deploy
+## Live
 
-```bash
-npx vercel --yes
-```
-
-Repo: https://github.com/appycody58-byte/express-track-dashboard
+https://express-track-dashboard.vercel.app

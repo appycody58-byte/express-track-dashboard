@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tracking · Anita Vincent · 48291-55307-918274036</title>
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --surface: #ffffff;
+      --border: #d8dce3;
+      --text: #1a1d23;
+      --muted: #5c6570;
+      --accent: #1e3a5f;
+      --accent-soft: #e8eef5;
+      --line: #c5ccd6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+    }
+    .brand { font-size: 15px; font-weight: 650; color: var(--accent); }
+    .brand span { font-weight: 500; color: var(--muted); }
+    nav a {
+      font-size: 13px; color: var(--muted); text-decoration: none; margin-left: 20px;
+    }
+    nav a:hover { color: var(--text); }
+    nav a.active { color: var(--text); font-weight: 600; }
+    .page { max-width: 720px; margin: 0 auto; padding: 32px 20px 64px; }
+    .crumb { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+    .crumb a { color: var(--muted); text-decoration: none; }
+    .hero {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; padding: 24px 28px; margin-bottom: 16px;
+    }
+    .hero-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+    .hero h1 { font-size: 22px; font-weight: 650; margin-bottom: 6px; }
+    .tn {
+      font-family: ui-monospace, "Courier New", monospace;
+      font-size: 13px; color: var(--muted); margin-bottom: 16px;
+    }
+    .status-main { font-size: 17px; font-weight: 650; color: var(--accent); }
+    .status-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+    .panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; margin-bottom: 16px;
+    }
+    .panel-h {
+      padding: 12px 18px; border-bottom: 1px solid var(--border);
+      font-size: 11px; font-weight: 600; letter-spacing: 0.05em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .panel-b { padding: 18px; }
+    .kv-row {
+      display: grid; grid-template-columns: 120px 1fr; gap: 8px;
+      font-size: 13px; margin-bottom: 10px;
+    }
+    .kv-row .k { color: var(--muted); }
+    .bar { height: 6px; background: #e6e9ef; border-radius: 3px; overflow: hidden; }
+    .bar-fill { height: 100%; width: 20%; background: var(--accent); transition: width 0.35s ease; }
+    .progress-meta {
+      display: flex; justify-content: space-between; font-size: 12px;
+      color: var(--muted); margin-bottom: 8px;
+    }
+    .progress-note { font-size: 13px; color: var(--muted); margin-top: 10px; }
+    .timeline { position: relative; padding-left: 24px; }
+    .timeline::before {
+      content: ""; position: absolute; left: 5px; top: 4px; bottom: 4px;
+      width: 2px; background: var(--line);
+    }
+    .tprog {
+      position: absolute; left: 5px; top: 4px; width: 2px;
+      background: var(--accent); z-index: 1;
+    }
+    .ti { position: relative; padding-bottom: 18px; }
+    .ti:last-child { padding-bottom: 0; }
+    .td {
+      position: absolute; left: -24px; top: 3px; width: 10px; height: 10px;
+      border-radius: 50%; background: #b0b7c3; border: 2px solid #fff; z-index: 2;
+    }
+    .ti.done .td { background: var(--accent); }
+    .ti.current .td {
+      background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .ti.pending { opacity: 0.45; }
+    .tit { font-weight: 600; font-size: 13px; }
+    .ti.current .tit { color: var(--accent); }
+    .til, .titm { font-size: 12px; color: var(--muted); }
+    .btn {
+      height: 38px; padding: 0 16px; font-size: 13px; font-weight: 600;
+      font-family: inherit; border-radius: 4px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface); margin-top: 14px;
+    }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .source { font-size: 12px; color: var(--muted); margin-top: 12px; }
+    footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 36px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">Global Express <span>· Tracking</span></div>
+    <nav>
+      <a href="index.html">Peggy Palmer</a>
+      <a href="anita.html" class="active">Anita Vincent</a>
+    </nav>
+  </header>
+
+  <div class="page">
+    <div class="crumb"><a href="index.html">Tracking</a> / Anita Vincent</div>
+
+    <section class="hero">
+      <div class="hero-label">Shipment</div>
+      <h1 id="name">Anita Vincent</h1>
+      <div class="tn" id="tn">48291-55307-918274036</div>
+      <div class="status-main" id="status">In Transit</div>
+      <div class="status-sub" id="statusDetail">Loading status…</div>
+    </section>
+
+    <div class="panel">
+      <div class="panel-h">Ship to</div>
+      <div class="panel-b">
+        <div class="kv-row"><span class="k">Recipient</span><span class="v">Anita Vincent</span></div>
+        <div class="kv-row"><span class="k">Address</span><span class="v" id="toAddr">4817 Friendly St</span></div>
+        <div class="kv-row"><span class="k">Origin</span><span class="v">Houston, TX</span></div>
+        <div class="kv-row"><span class="k">Service</span><span class="v" id="carrier">Ground</span></div>
+        <div class="kv-row"><span class="k">Est. delivery</span><span class="v" id="eta">—</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h">Route progress</div>
+      <div class="panel-b">
+        <div class="progress-meta"><span>Houston, TX</span><span>Destination</span></div>
+        <div class="bar"><div class="bar-fill" id="bar" style="width:20%"></div></div>
+        <p class="progress-note" id="locationNote">Early transit</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h">Tracking history</div>
+      <div class="panel-b">
+        <div class="timeline" id="timeline"></div>
+        <div class="source" id="source">—</div>
+        <button class="btn btn-primary" id="btnRefresh" onclick="load()">Refresh status</button>
+      </div>
+    </div>
+
+    <footer>Global Express · Updated <span id="asof">—</span></footer>
+  </div>
+
+  <script>
+    const TN = '48291-55307-918274036';
+
+    function renderTimeline(events) {
+      const root = document.getElementById('timeline');
+      if (!events || !events.length) {
+        root.innerHTML = '<p style="color:var(--muted)">No tracking events available.</p>';
+        return;
+      }
+      let html = '<div class="tprog" id="prog"></div>';
+      events.forEach(e => {
+        const st = e.state || 'done';
+        html += `<div class="ti ${st}"><div class="td"></div>` +
+          `<div class="tit">${e.title || 'Update'}</div>` +
+          (e.loc ? `<div class="til">${e.loc}</div>` : '') +
+          (e.time ? `<div class="titm">${e.time}</div>` : '') +
+          `</div>`;
+      });
+      root.innerHTML = html;
+      requestAnimationFrame(() => {
+        const cur = root.querySelector('.ti.current') || root.querySelector('.ti.done');
+        const prog = document.getElementById('prog');
+        if (cur && prog) prog.style.height = (cur.offsetTop + 4) + 'px';
+      });
+    }
+
+    async function load() {
+      const btn = document.getElementById('btnRefresh');
+      btn.disabled = true;
+      btn.textContent = 'Updating…';
+      try {
+        const res = await fetch('/api/track?number=' + encodeURIComponent(TN));
+        const d = await res.json();
+        const prog = d.progress != null ? d.progress : 20;
+        document.getElementById('name').textContent = d.name || 'Anita Vincent';
+        document.getElementById('tn').textContent = d.trackingNumber || TN;
+        document.getElementById('status').textContent = d.status || 'In Transit';
+        document.getElementById('statusDetail').textContent =
+          (d.statusDetail || '') + ' · Progress ' + prog + '%';
+        document.getElementById('bar').style.width = prog + '%';
+        document.getElementById('locationNote').textContent =
+          d.currentLocation || d.statusDetail || 'In transit';
+        document.getElementById('carrier').textContent = d.carrier || 'Ground';
+        document.getElementById('eta').textContent = d.eta || '—';
+        document.getElementById('source').textContent =
+          (d.live ? 'Source: EasyPost (live) · ' : 'Source: ') + (d.source || 'Registered network');
+        document.getElementById('asof').textContent = new Date().toLocaleString('en-US');
+        if (d.street) {
+          document.getElementById('toAddr').textContent =
+            [d.street, [d.city, d.state, d.zip].filter(Boolean).join(', ')].filter(Boolean).join(', ');
+        }
+        renderTimeline(d.events || []);
+      } catch (e) {
+        document.getElementById('statusDetail').textContent = 'Unable to refresh.';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Refresh status';
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>

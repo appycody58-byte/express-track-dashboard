@@ -25,8 +25,6 @@
       line-height: 1.5;
       min-height: 100vh;
     }
-
-    /* Top bar */
     .topbar {
       background: var(--navy);
       color: #fff;
@@ -45,14 +43,11 @@
       margin-left: 18px;
     }
     .topbar a:hover { color: #fff; }
-
     .wrap {
       max-width: 1100px;
       margin: 0 auto;
       padding: 24px 20px 56px;
     }
-
-    /* Status banner */
     .banner {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -89,8 +84,6 @@
     @media (max-width: 640px) {
       .banner .status-block { text-align: left; }
     }
-
-    /* Layout: map + side */
     .main-grid {
       display: grid;
       grid-template-columns: 1.4fr 1fr;
@@ -100,7 +93,6 @@
     @media (max-width: 860px) {
       .main-grid { grid-template-columns: 1fr; }
     }
-
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -118,7 +110,6 @@
       background: #fafbfc;
     }
     .card-b { padding: 16px; }
-
     #map {
       height: 420px;
       width: 100%;
@@ -132,7 +123,6 @@
       background: #fafbfc;
     }
     .map-caption strong { color: var(--text); font-weight: 600; }
-
     .progress-wrap { margin-bottom: 14px; }
     .progress-labels {
       display: flex;
@@ -161,7 +151,6 @@
     }
     .pct-row .pct { font-weight: 650; color: var(--navy); }
     .pct-row .remain { color: var(--muted); }
-
     .kv { display: grid; gap: 10px; }
     .kv-row {
       display: grid;
@@ -171,7 +160,6 @@
     }
     .kv-row .k { color: var(--muted); }
     .kv-row .v { font-weight: 500; }
-
     .timeline { position: relative; padding-left: 22px; }
     .timeline::before {
       content: "";
@@ -212,7 +200,6 @@
     .tit { font-weight: 600; font-size: 13px; }
     .ti.current .tit { color: var(--navy); }
     .til, .titm { font-size: 12px; color: var(--muted); }
-
     .actions { margin-top: 14px; }
     .btn {
       height: 36px;
@@ -232,7 +219,6 @@
       color: #fff;
     }
     .btn:disabled { opacity: 0.55; cursor: not-allowed; }
-
     .note {
       font-size: 12px;
       color: var(--muted);
@@ -240,15 +226,12 @@
       padding-top: 12px;
       border-top: 1px solid var(--line);
     }
-
     footer {
       text-align: center;
       font-size: 12px;
       color: var(--muted);
       margin-top: 28px;
     }
-
-    /* Leaflet marker labels */
     .map-label {
       background: var(--navy);
       color: #fff;
@@ -286,17 +269,15 @@
     </div>
 
     <div class="main-grid">
-      <!-- MAP -->
       <div class="card">
         <div class="card-h">Driver position</div>
         <div id="map"></div>
         <div class="map-caption">
-          <strong id="mapLoc">Lake Charles, LA area</strong>
-          <span id="mapNote"> — approximately 3 hours east of Houston origin. Second checkpoint on route to Elizabethton, TN.</span>
+          <strong id="mapLoc">Texarkana, TX / AR area</strong>
+          <span id="mapNote"> — approximately 7 hours from Houston origin. Second checkpoint on route to Elizabethton, TN.</span>
         </div>
       </div>
 
-      <!-- DETAILS -->
       <div style="display:flex;flex-direction:column;gap:16px">
         <div class="card">
           <div class="card-h">Route progress</div>
@@ -314,7 +295,7 @@
             </div>
             <div class="kv">
               <div class="kv-row"><span class="k">Origin</span><span class="v">Houston, TX</span></div>
-              <div class="kv-row"><span class="k">Current</span><span class="v" id="currentLoc">Lake Charles, LA corridor</span></div>
+              <div class="kv-row"><span class="k">Current</span><span class="v" id="currentLoc">Texarkana, TX / AR corridor</span></div>
               <div class="kv-row"><span class="k">Destination</span><span class="v">Elizabethton, TN</span></div>
               <div class="kv-row"><span class="k">Est. delivery</span><span class="v" id="eta">—</span></div>
             </div>
@@ -340,7 +321,7 @@
       <div class="card-b">
         <div class="timeline" id="timeline"></div>
         <p class="note" id="source">
-          Position is estimated from dispatch records: late departure from Houston; approximately three hours of driving completed on the first leg. Package remains on the early segment of the Texas–Tennessee corridor.
+          Position is estimated from dispatch records: late departure from Houston; approximately seven hours of driving completed on the opening leg. Package remains on the early segment of the Texas–Tennessee corridor (~20% complete, 80% remaining).
         </p>
         <div class="actions">
           <button class="btn btn-primary" id="btnRefresh" onclick="refresh()">Refresh status</button>
@@ -353,9 +334,9 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
-    // Houston → ~3 hours east (Lake Charles, LA) → Elizabethton, TN
+    // Houston → ~7 hours (Texarkana corridor) → Elizabethton, TN
     const ORIGIN = { lat: 29.7604, lng: -95.3698, label: 'Houston, TX (Origin)' };
-    const CURRENT = { lat: 30.2266, lng: -93.2174, label: 'Current position' }; // Lake Charles area
+    const CURRENT = { lat: 33.4251, lng: -94.0477, label: 'Current position' }; // Texarkana ~7 hrs
     const DEST = { lat: 36.3487, lng: -82.2107, label: 'Elizabethton, TN' };
 
     const TN = '11881-87236-402382053';
@@ -373,13 +354,12 @@
         maxZoom: 18
       }).addTo(map);
 
-      // Route line: origin → current → dest (dashed after current)
-      const driven = L.polyline(
+      L.polyline(
         [[ORIGIN.lat, ORIGIN.lng], [CURRENT.lat, CURRENT.lng]],
         { color: '#1b2a4a', weight: 4, opacity: 0.9 }
       ).addTo(map);
 
-      const remaining = L.polyline(
+      L.polyline(
         [[CURRENT.lat, CURRENT.lng], [DEST.lat, DEST.lng]],
         { color: '#98a2b3', weight: 3, opacity: 0.75, dashArray: '8 8' }
       ).addTo(map);
@@ -407,12 +387,11 @@
         .bindPopup('<strong>Houston, TX</strong><br>Origin facility');
 
       driverMarker = L.marker([CURRENT.lat, CURRENT.lng], { icon: currentIcon }).addTo(map)
-        .bindPopup('<strong>Current position</strong><br>Lake Charles, LA corridor<br>Approx. 3 hours from Houston<br>~20% of total route');
+        .bindPopup('<strong>Current position</strong><br>Texarkana, TX / AR corridor<br>Approx. 7 hours from Houston<br>~20% of total route');
 
       L.marker([DEST.lat, DEST.lng], { icon: destIcon }).addTo(map)
         .bindPopup('<strong>Elizabethton, TN</strong><br>1201 Thomas Blvd<br>Peggy Palmer');
 
-      // Fit bounds with padding
       map.fitBounds(
         L.latLngBounds([
           [ORIGIN.lat, ORIGIN.lng],
@@ -422,7 +401,6 @@
         { padding: [40, 40] }
       );
 
-      // Emphasize driver area slightly
       setTimeout(() => {
         map.panTo([CURRENT.lat, CURRENT.lng], { animate: true });
       }, 600);
@@ -479,7 +457,7 @@
         document.getElementById('source').textContent =
           (d.live ? 'Data source: EasyPost (live). ' : '') +
           (d.source || 'Registered network') +
-          '. Position reflects approximately three hours of driving from Houston on the opening leg; about 80% of the route to Elizabethton, TN remains.';
+          '. Position reflects approximately seven hours of driving from Houston on the opening leg; about 80% of the route to Elizabethton, TN remains.';
 
         renderTimeline(d.events || []);
       } catch (e) {

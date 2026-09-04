@@ -47,23 +47,16 @@ function dayStr(d) {
 
 /**
  * Early route (~20%) — Texas → Tennessee
- * Late start yesterday (barely moved), rolling again today.
- * Current area: East Texas corridor (Beaumont / Orange toward LA line).
+ * Only ~3 hours driven after leaving Houston (second checkpoint).
+ * Current: Lake Charles, LA corridor. ~80% of route still remaining.
  */
 function earlyRouteFallback(reg, trackingNumber) {
   const now = new Date();
-  // Label created yesterday afternoon
-  const t0 = new Date(now.getTime() - 28 * 3600000);
-  // Picked up late last night
-  const t1 = new Date(now.getTime() - 22 * 3600000);
-  // Departed Houston — very late, short leg only
-  const t2 = new Date(now.getTime() - 20 * 3600000);
-  // Stopped overnight (too late to continue)
-  const t3 = new Date(now.getTime() - 16 * 3600000);
-  // Resumed this morning — current scan East Texas
-  const t4 = new Date(now.getTime() - 3 * 3600000);
-  // Still ~1.5–2 days of road left at this pace
-  const eta = new Date(now.getTime() + 42 * 3600000);
+  const t0 = new Date(now.getTime() - 30 * 3600000);
+  const t1 = new Date(now.getTime() - 26 * 3600000);
+  const t2 = new Date(now.getTime() - 24 * 3600000);
+  const t3 = new Date(now.getTime() - 5 * 3600000);
+  const eta = new Date(now.getTime() + 48 * 3600000);
 
   return {
     trackingNumber: reg.displayTn || trackingNumber,
@@ -76,23 +69,22 @@ function earlyRouteFallback(reg, trackingNumber) {
     destLabel: reg.destLabel,
     carrier: 'Global Express',
     status: 'In Transit',
-    statusDetail: 'East Texas corridor · early leg',
+    statusDetail: 'Second checkpoint · approx. 3 hours from origin',
     progress: 20,
     isPreTransit: false,
     live: false,
-    source: 'Registered network (~20% · early transit)',
-    lastScan: fmt(t4),
+    source: 'Registered network (~20% complete · 80% remaining)',
+    lastScan: fmt(t3),
     eta: dayStr(eta),
-    currentLocation: 'Beaumont / Orange, TX area',
+    currentLocation: 'Lake Charles, LA corridor',
     events: [
       { title: 'Label Created', loc: 'Houston, TX US', time: fmt(t0), state: 'done' },
       { title: 'Picked Up', loc: 'Houston, TX', time: fmt(t1), state: 'done' },
       { title: 'Departed Origin Facility', loc: 'Houston, TX', time: fmt(t2), state: 'done' },
-      { title: 'Overnight stop', loc: 'East of Houston, TX', time: fmt(t3), state: 'done' },
       {
-        title: 'In Transit',
-        loc: 'Beaumont / Orange, TX · toward Louisiana',
-        time: fmt(t4),
+        title: 'In Transit — Checkpoint 2',
+        loc: 'Lake Charles, LA corridor · approx. 3 hours from Houston',
+        time: fmt(t3),
         state: 'current'
       },
       { title: 'Out for Delivery', loc: reg.destLabel, time: '', state: 'pending' },

@@ -3,156 +3,260 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shipment Tracking · Peggy Palmer · 11881-87236-402382053</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <title>Track Your Package | FedEx</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <style>
     :root {
-      --bg: #f0f2f5;
-      --surface: #ffffff;
-      --border: #d0d5dd;
-      --text: #101828;
-      --muted: #667085;
-      --navy: #1b2a4a;
-      --navy-mid: #243556;
-      --line: #eaecf0;
+      --fx-purple: #4d148c;
+      --fx-purple-dark: #3a0f6a;
+      --fx-orange: #ff6200;
+      --fx-bg: #f2f2f2;
+      --fx-white: #ffffff;
+      --fx-text: #333333;
+      --fx-muted: #666666;
+      --fx-border: #dddddd;
+      --fx-green: #008a00;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: var(--fx-bg);
+      color: var(--fx-text);
       font-size: 14px;
-      line-height: 1.5;
+      line-height: 1.45;
       min-height: 100vh;
     }
-    .topbar {
-      background: var(--navy);
+
+    /* FedEx-style header */
+    .fx-header {
+      background: var(--fx-purple);
       color: #fff;
-      height: 52px;
+      padding: 0 24px;
+      height: 56px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 24px;
     }
-    .topbar .logo { font-size: 14px; font-weight: 650; letter-spacing: 0.04em; }
-    .topbar .logo span { font-weight: 400; opacity: 0.7; margin-left: 6px; }
-    .wrap {
-      max-width: 1100px;
+    .fx-logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      font-style: italic;
+    }
+    .fx-logo span { color: var(--fx-orange); }
+    .fx-header-links a {
+      color: rgba(255,255,255,0.9);
+      text-decoration: none;
+      font-size: 13px;
+      margin-left: 20px;
+    }
+
+    /* Tracking search band */
+    .fx-search-band {
+      background: var(--fx-white);
+      border-bottom: 1px solid var(--fx-border);
+      padding: 28px 20px 24px;
+    }
+    .fx-search-inner {
+      max-width: 720px;
       margin: 0 auto;
-      padding: 24px 20px 56px;
     }
-    .banner {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 20px 24px;
-      margin-bottom: 16px;
+    .fx-search-inner h1 {
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--fx-purple);
+      margin-bottom: 14px;
+    }
+    .fx-search-row {
       display: flex;
-      flex-wrap: wrap;
-      gap: 16px 32px;
-      align-items: flex-start;
-      justify-content: space-between;
+      gap: 0;
+      max-width: 560px;
     }
-    .banner h1 {
-      font-size: 20px;
-      font-weight: 650;
+    .fx-search-row input {
+      flex: 1;
+      height: 44px;
+      border: 1px solid #999;
+      border-right: none;
+      padding: 0 14px;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+    }
+    .fx-search-row input:focus { border-color: var(--fx-purple); }
+    .fx-search-row button {
+      height: 44px;
+      padding: 0 22px;
+      background: var(--fx-purple);
+      color: #fff;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .fx-search-row button:hover { background: var(--fx-purple-dark); }
+    .fx-search-hint {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--fx-muted);
+    }
+    .fx-error {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: #fff3f0;
+      border-left: 4px solid var(--fx-orange);
+      color: #333;
+      font-size: 13px;
+    }
+
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px 16px 48px;
+    }
+
+    /* Result area hidden until track */
+    #result { display: none; }
+
+    .status-card {
+      background: var(--fx-white);
+      border: 1px solid var(--fx-border);
+      margin-bottom: 16px;
+    }
+    .status-top {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--fx-border);
+    }
+    .status-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--fx-muted);
+      margin-bottom: 6px;
+    }
+    .status-title {
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--fx-purple);
       margin-bottom: 4px;
     }
-    .banner .tn {
-      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    .status-sub {
+      font-size: 14px;
+      color: var(--fx-muted);
+    }
+    .status-tn {
+      margin-top: 12px;
       font-size: 13px;
-      color: var(--muted);
+      color: var(--fx-muted);
     }
-    .banner .status-block { text-align: right; }
-    .banner .status {
-      font-size: 16px;
-      font-weight: 650;
-      color: var(--navy);
+    .status-tn strong {
+      color: var(--fx-text);
+      font-family: Consolas, "Courier New", monospace;
+      font-weight: 600;
     }
-    .banner .status-meta {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-    @media (max-width: 640px) {
-      .banner .status-block { text-align: left; }
-    }
-    .main-grid {
+
+    .meta-grid {
       display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 16px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--fx-border);
+    }
+    @media (max-width: 700px) {
+      .meta-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .meta-cell {
+      padding: 14px 20px;
+      border-right: 1px solid var(--fx-border);
+    }
+    .meta-cell:last-child { border-right: none; }
+    .meta-cell .lab {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--fx-muted);
+      margin-bottom: 4px;
+    }
+    .meta-cell .val {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* Progress */
+    .progress-section {
+      background: var(--fx-white);
+      border: 1px solid var(--fx-border);
+      padding: 20px 24px;
       margin-bottom: 16px;
     }
-    @media (max-width: 860px) {
-      .main-grid { grid-template-columns: 1fr; }
+    .progress-section h2 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: var(--fx-text);
     }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    .card-h {
-      padding: 11px 16px;
-      border-bottom: 1px solid var(--border);
-      font-size: 11px;
-      font-weight: 650;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted);
-      background: #fafbfc;
-    }
-    .card-b { padding: 16px; }
-    #map {
-      height: 420px;
-      width: 100%;
-      background: #e8ecf1;
-    }
-    .map-caption {
-      padding: 10px 16px;
-      border-top: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--muted);
-      background: #fafbfc;
-    }
-    .map-caption strong { color: var(--text); font-weight: 600; }
-    .progress-wrap { margin-bottom: 14px; }
     .progress-labels {
       display: flex;
       justify-content: space-between;
       font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 6px;
+      color: var(--fx-muted);
+      margin-bottom: 8px;
     }
     .bar {
       height: 8px;
-      background: var(--line);
+      background: #e5e5e5;
       border-radius: 4px;
       overflow: hidden;
     }
     .bar-fill {
       height: 100%;
       width: 20%;
-      background: var(--navy);
+      background: var(--fx-purple);
       border-radius: 4px;
+      transition: width 0.4s ease;
     }
-    .pct-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 8px;
+    .progress-pct {
+      margin-top: 10px;
       font-size: 13px;
+      color: var(--fx-muted);
     }
-    .pct-row .pct { font-weight: 650; color: var(--navy); }
-    .pct-row .remain { color: var(--muted); }
-    .kv { display: grid; gap: 10px; }
-    .kv-row {
+    .progress-pct strong { color: var(--fx-purple); }
+
+    /* Map + timeline layout */
+    .detail-grid {
       display: grid;
-      grid-template-columns: 110px 1fr;
-      gap: 6px;
-      font-size: 13px;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
     }
-    .kv-row .k { color: var(--muted); }
-    .kv-row .v { font-weight: 500; }
+    @media (max-width: 800px) {
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--fx-white);
+      border: 1px solid var(--fx-border);
+    }
+    .panel-h {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--fx-border);
+      font-size: 14px;
+      font-weight: 600;
+      background: #fafafa;
+    }
+    #map {
+      height: 360px;
+      width: 100%;
+      background: #e8ecf1;
+    }
+    .map-foot {
+      padding: 12px 18px;
+      font-size: 13px;
+      color: var(--fx-muted);
+      border-top: 1px solid var(--fx-border);
+    }
+    .map-foot strong { color: var(--fx-text); }
+
+    .timeline-body { padding: 18px 18px 18px 20px; }
     .timeline { position: relative; padding-left: 22px; }
     .timeline::before {
       content: "";
@@ -161,215 +265,256 @@
       top: 6px;
       bottom: 6px;
       width: 2px;
-      background: var(--line);
+      background: #ddd;
     }
     .tprog {
       position: absolute;
       left: 4px;
       top: 6px;
       width: 2px;
-      background: var(--navy);
+      background: var(--fx-purple);
       z-index: 1;
     }
-    .ti { position: relative; padding-bottom: 16px; }
+    .ti { position: relative; padding-bottom: 18px; }
     .ti:last-child { padding-bottom: 0; }
     .td {
       position: absolute;
       left: -22px;
-      top: 4px;
+      top: 3px;
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: #c5cad3;
+      background: #ccc;
       border: 2px solid #fff;
       z-index: 2;
     }
-    .ti.done .td { background: var(--navy); }
+    .ti.done .td { background: var(--fx-purple); }
     .ti.current .td {
-      background: var(--navy);
-      box-shadow: 0 0 0 3px rgba(27, 42, 74, 0.18);
+      background: var(--fx-orange);
+      box-shadow: 0 0 0 3px rgba(255, 98, 0, 0.25);
     }
     .ti.pending { opacity: 0.4; }
-    .tit { font-weight: 600; font-size: 13px; }
-    .ti.current .tit { color: var(--navy); }
-    .til, .titm { font-size: 12px; color: var(--muted); }
-    .actions { margin-top: 14px; }
-    .btn {
-      height: 36px;
-      padding: 0 14px;
-      font-size: 13px;
+    .tit { font-weight: 600; font-size: 14px; }
+    .ti.current .tit { color: var(--fx-purple); }
+    .til, .titm { font-size: 13px; color: var(--fx-muted); margin-top: 2px; }
+
+    .ship-to {
+      background: var(--fx-white);
+      border: 1px solid var(--fx-border);
+      padding: 18px 24px;
+      margin-bottom: 16px;
+    }
+    .ship-to h2 {
+      font-size: 14px;
       font-weight: 600;
-      font-family: inherit;
-      border-radius: 4px;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
+      margin-bottom: 10px;
     }
-    .btn-primary {
-      background: var(--navy);
-      border-color: var(--navy);
-      color: #fff;
-    }
-    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
-    .note {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid var(--line);
-    }
-    footer {
+    .ship-to p { font-size: 14px; line-height: 1.6; }
+
+    .fx-footer {
       text-align: center;
+      padding: 24px;
       font-size: 12px;
-      color: var(--muted);
-      margin-top: 28px;
+      color: var(--fx-muted);
     }
+
     .map-label {
-      background: var(--navy);
+      background: var(--fx-purple);
       color: #fff;
       font-size: 11px;
       font-weight: 600;
       padding: 3px 8px;
-      border-radius: 3px;
+      border-radius: 2px;
       white-space: nowrap;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
     .map-label.current {
-      background: #b42318;
+      background: var(--fx-orange);
     }
   </style>
 </head>
 <body>
-  <div class="topbar">
-    <div class="logo">GLOBAL EXPRESS <span>TRACKING</span></div>
+  <header class="fx-header">
+    <div class="fx-logo">Fed<span>Ex</span></div>
+    <div class="fx-header-links">
+      <a href="#">Shipping</a>
+      <a href="#">Tracking</a>
+      <a href="#">Support</a>
+    </div>
+  </header>
+
+  <div class="fx-search-band">
+    <div class="fx-search-inner">
+      <h1>Track your package</h1>
+      <div class="fx-search-row">
+        <input id="tnInput" type="text" placeholder="Enter tracking number" autocomplete="off" />
+        <button type="button" onclick="doTrack()">TRACK</button>
+      </div>
+      <p class="fx-search-hint">Enter a tracking number to view package location in the network.</p>
+      <div class="fx-error" id="errBox"></div>
+    </div>
   </div>
 
   <div class="wrap">
-    <div class="banner">
-      <div>
-        <h1>Peggy Palmer</h1>
-        <div class="tn" id="tn">11881-87236-402382053</div>
-      </div>
-      <div class="status-block">
-        <div class="status" id="status">In Transit</div>
-        <div class="status-meta" id="statusMeta">Early leg · approximately 20% complete</div>
-      </div>
-    </div>
-
-    <div class="main-grid">
-      <div class="card">
-        <div class="card-h">Driver position</div>
-        <div id="map"></div>
-        <div class="map-caption">
-          <strong id="mapLoc">Texarkana, TX / AR area</strong>
-          <span id="mapNote"> — approximately 7 hours from Houston origin. Second checkpoint on route to Elizabethton, TN.</span>
+    <div id="result">
+      <div class="status-card">
+        <div class="status-top">
+          <div class="status-label">Status</div>
+          <div class="status-title" id="statusTitle">In transit</div>
+          <div class="status-sub" id="statusSub">—</div>
+          <div class="status-tn">Tracking ID: <strong id="tnDisplay">—</strong></div>
         </div>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:16px">
-        <div class="card">
-          <div class="card-h">Route progress</div>
-          <div class="card-b">
-            <div class="progress-wrap">
-              <div class="progress-labels">
-                <span>Houston, TX</span>
-                <span>Elizabethton, TN</span>
-              </div>
-              <div class="bar"><div class="bar-fill" id="bar" style="width:20%"></div></div>
-              <div class="pct-row">
-                <span class="pct" id="pct">20% complete</span>
-                <span class="remain" id="remain">80% remaining</span>
-              </div>
-            </div>
-            <div class="kv">
-              <div class="kv-row"><span class="k">Origin</span><span class="v">Houston, TX</span></div>
-              <div class="kv-row"><span class="k">Current</span><span class="v" id="currentLoc">Texarkana, TX / AR corridor</span></div>
-              <div class="kv-row"><span class="k">Destination</span><span class="v">Elizabethton, TN</span></div>
-              <div class="kv-row"><span class="k">Est. delivery</span><span class="v" id="eta">—</span></div>
-            </div>
+        <div class="meta-grid">
+          <div class="meta-cell">
+            <div class="lab">From</div>
+            <div class="val">Houston, TX</div>
           </div>
-        </div>
-
-        <div class="card">
-          <div class="card-h">Ship to</div>
-          <div class="card-b">
-            <div class="kv">
-              <div class="kv-row"><span class="k">Recipient</span><span class="v">Peggy Palmer</span></div>
-              <div class="kv-row"><span class="k">Address</span><span class="v">1201 Thomas Blvd<br>Elizabethton, TN 37643</span></div>
-              <div class="kv-row"><span class="k">Phone</span><span class="v">423.491-0319</span></div>
-              <div class="kv-row"><span class="k">Service</span><span class="v" id="carrier">Ground</span></div>
-            </div>
+          <div class="meta-cell">
+            <div class="lab">To</div>
+            <div class="val">Elizabethton, TN</div>
+          </div>
+          <div class="meta-cell">
+            <div class="lab">Scheduled delivery</div>
+            <div class="val" id="eta">—</div>
+          </div>
+          <div class="meta-cell">
+            <div class="lab">Service</div>
+            <div class="val" id="carrier">Ground</div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="card">
-      <div class="card-h">Tracking history</div>
-      <div class="card-b">
-        <div class="timeline" id="timeline"></div>
-        <p class="note" id="source">
-          Position is estimated from dispatch records: late departure from Houston; approximately seven hours of driving completed on the opening leg. Package remains on the early segment of the Texas–Tennessee corridor (~20% complete, 80% remaining).
+      <div class="progress-section">
+        <h2>On the way</h2>
+        <div class="progress-labels">
+          <span>Houston, TX</span>
+          <span>Elizabethton, TN</span>
+        </div>
+        <div class="bar"><div class="bar-fill" id="bar" style="width:20%"></div></div>
+        <p class="progress-pct">
+          <strong id="pctText">20%</strong> of the route complete ·
+          <span id="remainText">80% remaining</span>
         </p>
-        <div class="actions">
-          <button class="btn btn-primary" id="btnRefresh" onclick="refresh()">Refresh status</button>
+      </div>
+
+      <div class="detail-grid">
+        <div class="panel">
+          <div class="panel-h">Package location in the network</div>
+          <div id="map"></div>
+          <div class="map-foot">
+            <strong id="mapLoc">Texarkana, TX / AR corridor</strong>
+            <span id="mapNote"> — approximately 7 hours from Houston origin (checkpoint 2).</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-h">Travel history</div>
+          <div class="timeline-body">
+            <div class="timeline" id="timeline"></div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <footer>Global Express · Shipment tracking · Updated <span id="asof">—</span></footer>
+      <div class="ship-to">
+        <h2>Ship to</h2>
+        <p>
+          <strong>Peggy Palmer</strong><br>
+          1201 Thomas Blvd<br>
+          Elizabethton, TN 37643<br>
+          423.491-0319
+        </p>
+      </div>
+    </div>
   </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <div class="fx-footer">
+    Tracking results · Updated <span id="asof">—</span>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script>
-    const ORIGIN = { lat: 29.7604, lng: -95.3698, label: 'Houston, TX (Origin)' };
-    const CURRENT = { lat: 33.4251, lng: -94.0477, label: 'Current position' };
-    const DEST = { lat: 36.3487, lng: -82.2107, label: 'Elizabethton, TN' };
-    const TN = '11881-87236-402382053';
-    let map, driverMarker;
+    const REGISTERED = {
+      '1188187236402382053': true,
+      '11881-87236-402382053': true
+    };
+
+    const ORIGIN = { lat: 29.7604, lng: -95.3698 };
+    const CURRENT = { lat: 33.4251, lng: -94.0477 }; // Texarkana
+    const DEST = { lat: 36.3487, lng: -82.2107 };
+
+    let map, mapReady = false;
+
+    function cleanTn(n) {
+      return String(n || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    }
+
+    function isRegistered(raw) {
+      const c = cleanTn(raw);
+      return !!REGISTERED[c] || c === '1188187236402382053';
+    }
+
+    function showErr(msg) {
+      const el = document.getElementById('errBox');
+      el.style.display = msg ? 'block' : 'none';
+      el.textContent = msg || '';
+    }
 
     function initMap() {
-      map = L.map('map', { scrollWheelZoom: false, zoomControl: true }).setView([32.2, -88.5], 6);
+      if (mapReady) {
+        map.invalidateSize();
+        return;
+      }
+      map = L.map('map', { scrollWheelZoom: false, zoomControl: true }).setView([32.5, -88], 6);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap', maxZoom: 18
+        attribution: '&copy; OpenStreetMap',
+        maxZoom: 18
       }).addTo(map);
 
       L.polyline([[ORIGIN.lat, ORIGIN.lng], [CURRENT.lat, CURRENT.lng]],
-        { color: '#1b2a4a', weight: 4, opacity: 0.9 }).addTo(map);
+        { color: '#4d148c', weight: 4, opacity: 0.9 }).addTo(map);
       L.polyline([[CURRENT.lat, CURRENT.lng], [DEST.lat, DEST.lng]],
-        { color: '#98a2b3', weight: 3, opacity: 0.75, dashArray: '8 8' }).addTo(map);
+        { color: '#bbbbbb', weight: 3, opacity: 0.8, dashArray: '8 8' }).addTo(map);
 
-      const originIcon = L.divIcon({ className: '', html: '<div class="map-label">Origin</div>', iconSize: [56, 24], iconAnchor: [28, 12] });
-      const currentIcon = L.divIcon({ className: '', html: '<div class="map-label current">Driver</div>', iconSize: [58, 24], iconAnchor: [29, 12] });
-      const destIcon = L.divIcon({ className: '', html: '<div class="map-label">Destination</div>', iconSize: [90, 24], iconAnchor: [45, 12] });
+      const mk = (html, cls) => L.divIcon({
+        className: '',
+        html: '<div class="map-label ' + (cls || '') + '">' + html + '</div>',
+        iconSize: [70, 24],
+        iconAnchor: [35, 12]
+      });
 
-      L.marker([ORIGIN.lat, ORIGIN.lng], { icon: originIcon }).addTo(map)
+      L.marker([ORIGIN.lat, ORIGIN.lng], { icon: mk('Origin') }).addTo(map)
         .bindPopup('<strong>Houston, TX</strong><br>Origin facility');
-      driverMarker = L.marker([CURRENT.lat, CURRENT.lng], { icon: currentIcon }).addTo(map)
-        .bindPopup('<strong>Current position</strong><br>Texarkana, TX / AR corridor<br>Approx. 7 hours from Houston<br>~20% of total route');
-      L.marker([DEST.lat, DEST.lng], { icon: destIcon }).addTo(map)
+      L.marker([CURRENT.lat, CURRENT.lng], { icon: mk('Here', 'current') }).addTo(map)
+        .bindPopup('<strong>Current location</strong><br>Texarkana, TX / AR corridor<br>~7 hours from Houston<br>In the network · ~20% of route');
+      L.marker([DEST.lat, DEST.lng], { icon: mk('Destination') }).addTo(map)
         .bindPopup('<strong>Elizabethton, TN</strong><br>1201 Thomas Blvd<br>Peggy Palmer');
 
       map.fitBounds(L.latLngBounds([
-        [ORIGIN.lat, ORIGIN.lng], [CURRENT.lat, CURRENT.lng], [DEST.lat, DEST.lng]
-      ]), { padding: [40, 40] });
-      setTimeout(() => map.panTo([CURRENT.lat, CURRENT.lng], { animate: true }), 600);
+        [ORIGIN.lat, ORIGIN.lng],
+        [CURRENT.lat, CURRENT.lng],
+        [DEST.lat, DEST.lng]
+      ]), { padding: [36, 36] });
+
+      mapReady = true;
+      setTimeout(() => {
+        map.invalidateSize();
+        map.panTo([CURRENT.lat, CURRENT.lng]);
+      }, 200);
     }
 
     function renderTimeline(events) {
       const root = document.getElementById('timeline');
       if (!events || !events.length) {
-        root.innerHTML = '<p style="color:var(--muted)">No events.</p>';
+        root.innerHTML = '<p style="color:#666">No travel history available.</p>';
         return;
       }
       let html = '<div class="tprog" id="prog"></div>';
       events.forEach(e => {
         const st = e.state || 'done';
-        html += `<div class="ti ${st}"><div class="td"></div>` +
-          `<div class="tit">${e.title || 'Update'}</div>` +
-          (e.loc ? `<div class="til">${e.loc}</div>` : '') +
-          (e.time ? `<div class="titm">${e.time}</div>` : '') + `</div>`;
+        html += '<div class="ti ' + st + '"><div class="td"></div>' +
+          '<div class="tit">' + (e.title || 'Update') + '</div>' +
+          (e.loc ? '<div class="til">' + e.loc + '</div>' : '') +
+          (e.time ? '<div class="titm">' + e.time + '</div>' : '') +
+          '</div>';
       });
       root.innerHTML = html;
       requestAnimationFrame(() => {
@@ -379,43 +524,85 @@
       });
     }
 
-    async function refresh() {
-      const btn = document.getElementById('btnRefresh');
-      btn.disabled = true;
-      btn.textContent = 'Updating…';
-      try {
-        const res = await fetch('/api/track?number=' + encodeURIComponent(TN));
-        const d = await res.json();
-        const prog = d.progress != null ? d.progress : 20;
-        document.getElementById('tn').textContent = d.trackingNumber || TN;
-        document.getElementById('status').textContent = d.status || 'In Transit';
-        document.getElementById('statusMeta').textContent =
-          (d.statusDetail || 'Early leg') + ' · approximately ' + prog + '% complete';
-        document.getElementById('bar').style.width = prog + '%';
-        document.getElementById('pct').textContent = prog + '% complete';
-        document.getElementById('remain').textContent = (100 - prog) + '% remaining';
-        document.getElementById('eta').textContent = d.eta || '—';
-        document.getElementById('carrier').textContent = d.carrier || 'Ground';
-        document.getElementById('asof').textContent = new Date().toLocaleString('en-US');
-        if (d.currentLocation) {
-          document.getElementById('currentLoc').textContent = d.currentLocation;
-          document.getElementById('mapLoc').textContent = d.currentLocation;
+    function applyData(d) {
+      const prog = d.progress != null ? d.progress : 20;
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('statusTitle').textContent = d.status || 'In transit';
+      document.getElementById('statusSub').textContent =
+        d.statusDetail || d.currentLocation || 'Package is moving through the network';
+      document.getElementById('tnDisplay').textContent = d.trackingNumber || '—';
+      document.getElementById('eta').textContent = d.eta || '—';
+      document.getElementById('carrier').textContent = d.carrier || 'FedEx Ground';
+      document.getElementById('bar').style.width = prog + '%';
+      document.getElementById('pctText').textContent = prog + '%';
+      document.getElementById('remainText').textContent = (100 - prog) + '% remaining';
+      document.getElementById('mapLoc').textContent =
+        d.currentLocation || 'Texarkana, TX / AR corridor';
+      document.getElementById('asof').textContent = new Date().toLocaleString('en-US');
+      renderTimeline(d.events || []);
+
+      setTimeout(initMap, 50);
+      document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function doTrack() {
+      const raw = (document.getElementById('tnInput').value || '').trim();
+      showErr('');
+      if (!raw) {
+        showErr('Please enter a tracking number.');
+        return;
+      }
+
+      // Registered Peggy number → show network location
+      if (isRegistered(raw)) {
+        try {
+          const res = await fetch('/api/track?number=' + encodeURIComponent(raw));
+          const d = await res.json();
+          applyData(d);
+        } catch (e) {
+          // Offline fallback for Peggy
+          applyData({
+            trackingNumber: '11881-87236-402382053',
+            status: 'In transit',
+            statusDetail: 'Second checkpoint · approx. 7 hours from origin',
+            progress: 20,
+            currentLocation: 'Texarkana, TX / AR corridor',
+            eta: '—',
+            carrier: 'FedEx Ground',
+            events: [
+              { title: 'Shipment information sent to FedEx', loc: 'Houston, TX US', time: '', state: 'done' },
+              { title: 'Picked up', loc: 'Houston, TX', time: '', state: 'done' },
+              { title: 'Left FedEx origin facility', loc: 'Houston, TX', time: '', state: 'done' },
+              { title: 'In transit', loc: 'Texarkana, TX / AR corridor', time: '', state: 'current' },
+              { title: 'On FedEx vehicle for delivery', loc: 'Elizabethton, TN', time: '', state: 'pending' },
+              { title: 'Delivered', loc: 'Elizabethton, TN', time: '', state: 'pending' }
+            ]
+          });
         }
-        document.getElementById('source').textContent =
-          (d.live ? 'Data source: EasyPost (live). ' : '') +
-          (d.source || 'Registered network') +
-          '. Position reflects approximately seven hours of driving from Houston on the opening leg; about 80% of the route to Elizabethton, TN remains.';
-        renderTimeline(d.events || []);
+        return;
+      }
+
+      // Try API for other numbers
+      try {
+        const res = await fetch('/api/track?number=' + encodeURIComponent(raw));
+        const d = await res.json();
+        if (d.status === 'Not found' || (!d.events || !d.events.length)) {
+          showErr('Tracking number not found. Check the number and try again.');
+          document.getElementById('result').style.display = 'none';
+          return;
+        }
+        applyData(d);
       } catch (e) {
-        document.getElementById('statusMeta').textContent = 'Status refresh unavailable · showing map position';
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Refresh status';
+        showErr('Unable to retrieve tracking information. Please try again.');
       }
     }
 
-    initMap();
-    refresh();
+    document.getElementById('tnInput').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') doTrack();
+    });
+
+    // Prefill Peggy TN for convenience (user can clear / change)
+    document.getElementById('tnInput').value = '11881-87236-402382053';
   </script>
 </body>
 </html>

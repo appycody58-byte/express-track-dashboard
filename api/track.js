@@ -35,14 +35,13 @@ function dayStr(d) {
 
 function midRouteFallback(reg, trackingNumber) {
   const now = new Date();
-  // Realistic timeline over ~2 days
   const tLabel = new Date(now.getTime() - 52 * 3600000);
   const tPickup = new Date(now.getTime() - 46 * 3600000);
-  const tDepartOrigin = new Date(now.getTime() - 44 * 3600000);
-  const tArriveLocal = new Date(now.getTime() - 40 * 3600000);
-  const tDepartLocal = new Date(now.getTime() - 36 * 3600000);
-  const tArriveHub = new Date(now.getTime() - 28 * 3600000);
-  const tDepartHub = new Date(now.getTime() - 22 * 3600000);
+  const tArriveOrigin = new Date(now.getTime() - 44 * 3600000);
+  const tDepartOrigin = new Date(now.getTime() - 40 * 3600000);
+  const tShreveport = new Date(now.getTime() - 36 * 3600000);
+  const tArriveLR = new Date(now.getTime() - 28 * 3600000);
+  const tDepartLR = new Date(now.getTime() - 22 * 3600000);
   const tArriveMemphis = new Date(now.getTime() - 10 * 3600000);
   const tSortMemphis = new Date(now.getTime() - 6 * 3600000);
   const eta = new Date(now.getTime() + 30 * 3600000);
@@ -72,72 +71,17 @@ function midRouteFallback(reg, trackingNumber) {
     shipDate: dayStr(tPickup),
     reference: 'PO-77641',
     events: [
-      {
-        title: 'Shipment information sent to FedEx',
-        loc: 'HOUSTON, TX US',
-        time: fmt(tLabel),
-        state: 'done'
-      },
-      {
-        title: 'Picked up',
-        loc: 'HOUSTON, TX US',
-        time: fmt(tPickup),
-        state: 'done'
-      },
-      {
-        title: 'Arrived at FedEx origin facility',
-        loc: 'HOUSTON, TX US',
-        time: fmt(tArriveLocal),
-        state: 'done'
-      },
-      {
-        title: 'Left FedEx origin facility',
-        loc: 'HOUSTON, TX US',
-        time: fmt(tDepartOrigin),
-        state: 'done'
-      },
-      {
-        title: 'In transit',
-        loc: 'SHREVEPORT, LA US',
-        time: fmt(tDepartLocal),
-        state: 'done'
-      },
-      {
-        title: 'Arrived at FedEx location',
-        loc: 'LITTLE ROCK, AR US',
-        time: fmt(tArriveHub),
-        state: 'done'
-      },
-      {
-        title: 'Departed FedEx location',
-        loc: 'LITTLE ROCK, AR US',
-        time: fmt(tDepartHub),
-        state: 'done'
-      },
-      {
-        title: 'Arrived at FedEx location',
-        loc: 'MEMPHIS, TN US',
-        time: fmt(tArriveMemphis),
-        state: 'done'
-      },
-      {
-        title: 'At local FedEx facility',
-        loc: 'MEMPHIS, TN US',
-        time: fmt(tSortMemphis),
-        state: 'current'
-      },
-      {
-        title: 'On FedEx vehicle for delivery',
-        loc: 'ELIZABETHTON, TN US',
-        time: '',
-        state: 'pending'
-      },
-      {
-        title: 'Delivered',
-        loc: 'ELIZABETHTON, TN US',
-        time: '',
-        state: 'pending'
-      }
+      { title: 'Shipment information sent to FedEx', loc: 'HOUSTON, TX US', time: fmt(tLabel), state: 'done' },
+      { title: 'Picked up', loc: 'HOUSTON, TX US', time: fmt(tPickup), state: 'done' },
+      { title: 'Arrived at FedEx origin facility', loc: 'HOUSTON, TX US', time: fmt(tArriveOrigin), state: 'done' },
+      { title: 'Left FedEx origin facility', loc: 'HOUSTON, TX US', time: fmt(tDepartOrigin), state: 'done' },
+      { title: 'In transit', loc: 'SHREVEPORT, LA US', time: fmt(tShreveport), state: 'done' },
+      { title: 'Arrived at FedEx location', loc: 'LITTLE ROCK, AR US', time: fmt(tArriveLR), state: 'done' },
+      { title: 'Departed FedEx location', loc: 'LITTLE ROCK, AR US', time: fmt(tDepartLR), state: 'done' },
+      { title: 'Arrived at FedEx location', loc: 'MEMPHIS, TN US', time: fmt(tArriveMemphis), state: 'done' },
+      { title: 'At local FedEx facility', loc: 'MEMPHIS, TN US', time: fmt(tSortMemphis), state: 'current' },
+      { title: 'On FedEx vehicle for delivery', loc: 'ELIZABETHTON, TN US', time: '', state: 'pending' },
+      { title: 'Delivered', loc: 'ELIZABETHTON, TN US', time: '', state: 'pending' }
     ]
   };
 }

@@ -254,7 +254,6 @@
       margin-top: 4px;
     }
 
-    /* Timeline */
     .timeline { position: relative; padding-left: 24px; }
     .timeline::before {
       content: "";
@@ -352,7 +351,7 @@
     <div class="fx-search-inner">
       <h1>Track your package</h1>
       <div class="fx-search-row">
-        <input id="tnInput" type="text" placeholder="Enter tracking number" autocomplete="off" />
+        <input id="tnInput" type="text" placeholder="Enter tracking number" autocomplete="off" value="" />
         <button type="button" id="btnTrack" onclick="doTrack()">TRACK</button>
       </div>
       <p class="fx-search-hint">Enter your tracking number to view the latest status.</p>
@@ -362,7 +361,6 @@
 
   <div class="wrap">
     <div id="result">
-      <!-- Status -->
       <div class="card">
         <div class="status-block">
           <div class="status-label">Status</div>
@@ -390,7 +388,6 @@
         </div>
       </div>
 
-      <!-- Progress + location -->
       <div class="card section-pad">
         <div class="section-title">On the way</div>
         <div class="progress-labels">
@@ -409,13 +406,11 @@
         </div>
       </div>
 
-      <!-- Travel history -->
       <div class="card section-pad">
         <div class="section-title">Travel history</div>
         <div class="timeline" id="timeline"></div>
       </div>
 
-      <!-- Addresses -->
       <div class="card section-pad">
         <div class="ship-grid">
           <div class="ship-block">
@@ -542,7 +537,6 @@
             var res = await fetch('/api/track?number=' + encodeURIComponent(raw));
             var d = await res.json();
             if (d && d.status && d.status !== 'Not found') {
-              // Prefer FedEx-style wording
               if (!d.carrier || d.carrier === 'Global Express') d.carrier = 'FedEx Ground';
               applyData(d);
             } else {
@@ -574,8 +568,6 @@
     document.getElementById('tnInput').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') doTrack();
     });
-
-    document.getElementById('tnInput').value = '11881-87236-402382053';
   </script>
 </body>
 </html>

@@ -3,479 +3,577 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Track Your Package | FedEx</title>
+  <title>Tracking | FedEx</title>
   <style>
-    :root {
-      --fx-purple: #4d148c;
-      --fx-purple-dark: #3a0f6a;
-      --fx-orange: #ff6200;
-      --fx-bg: #f5f5f5;
-      --fx-white: #ffffff;
-      --fx-text: #333333;
-      --fx-muted: #666666;
-      --fx-border: #e0e0e0;
-      --fx-line: #d0d0d0;
-    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background: var(--fx-bg);
-      color: var(--fx-text);
+      background: #fff;
+      color: #333;
       font-size: 14px;
-      line-height: 1.5;
+      line-height: 1.45;
       min-height: 100vh;
     }
 
-    .fx-header {
-      background: var(--fx-purple);
+    /* Top utility bar */
+    .util-bar {
+      background: #4d148c;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 40px;
+      font-size: 12px;
+    }
+    .util-bar a {
       color: #fff;
-      height: 56px;
+      text-decoration: none;
+      margin-left: 24px;
+      opacity: 0.95;
+    }
+    .util-bar a:hover { text-decoration: underline; }
+
+    /* Main nav */
+    .main-nav {
+      background: #4d148c;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 28px;
+      padding: 0 40px;
     }
-    .fx-logo {
-      font-size: 22px;
+    .logo {
+      font-size: 28px;
       font-weight: 800;
       font-style: italic;
-      letter-spacing: -0.4px;
+      color: #fff;
+      letter-spacing: -0.5px;
+      line-height: 1;
     }
-    .fx-logo span { color: var(--fx-orange); }
-    .fx-header-links a {
-      color: rgba(255,255,255,0.92);
+    .logo span { color: #ff6200; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .nav-links a {
+      color: #fff;
       text-decoration: none;
-      font-size: 13px;
-      margin-left: 22px;
+      font-size: 14px;
+      font-weight: 500;
     }
-    .fx-header-links a:hover { text-decoration: underline; }
+    .nav-links a:hover { text-decoration: underline; }
 
-    .fx-search-band {
-      background: var(--fx-white);
-      border-bottom: 1px solid var(--fx-border);
-      padding: 32px 20px 28px;
+    /* Track module */
+    .track-module {
+      background: #f2f2f2;
+      border-bottom: 1px solid #ddd;
+      padding: 28px 40px 32px;
     }
-    .fx-search-inner {
-      max-width: 640px;
+    .track-module-inner {
+      max-width: 1100px;
       margin: 0 auto;
     }
-    .fx-search-inner h1 {
-      font-size: 24px;
+    .track-module h1 {
+      font-size: 20px;
       font-weight: 400;
-      color: var(--fx-purple);
-      margin-bottom: 16px;
+      color: #333;
+      margin-bottom: 14px;
     }
-    .fx-search-row {
+    .track-form {
       display: flex;
-      max-width: 520px;
-    }
-    .fx-search-row input {
-      flex: 1;
-      height: 46px;
+      max-width: 560px;
+      background: #fff;
       border: 1px solid #999;
-      border-right: none;
-      padding: 0 14px;
-      font-size: 15px;
+    }
+    .track-form:focus-within {
+      border-color: #4d148c;
+      box-shadow: 0 0 0 1px #4d148c;
+    }
+    .track-form input {
+      flex: 1;
+      border: none;
+      height: 48px;
+      padding: 0 16px;
+      font-size: 16px;
       font-family: inherit;
       outline: none;
+      color: #333;
     }
-    .fx-search-row input:focus {
-      border-color: var(--fx-purple);
-    }
-    .fx-search-row button {
-      height: 46px;
-      padding: 0 24px;
-      background: var(--fx-purple);
+    .track-form button {
+      height: 48px;
+      padding: 0 28px;
+      background: #ff6200;
       color: #fff;
       border: none;
       font-size: 14px;
       font-weight: 700;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.04em;
       font-family: inherit;
       cursor: pointer;
+      white-space: nowrap;
     }
-    .fx-search-row button:hover { background: var(--fx-purple-dark); }
-    .fx-search-row button:disabled {
-      opacity: 0.65;
+    .track-form button:hover { background: #e55800; }
+    .track-form button:disabled {
+      opacity: 0.7;
       cursor: not-allowed;
     }
-    .fx-search-hint {
-      margin-top: 12px;
+    .track-help {
+      margin-top: 10px;
       font-size: 12px;
-      color: var(--fx-muted);
+      color: #666;
     }
-    .fx-error {
+    .track-error {
       display: none;
       margin-top: 14px;
+      max-width: 560px;
       padding: 12px 14px;
-      background: #fff8f5;
-      border-left: 4px solid var(--fx-orange);
-      font-size: 13px;
+      background: #fff;
+      border: 1px solid #c00;
+      border-left: 4px solid #c00;
       color: #333;
+      font-size: 13px;
     }
 
-    .wrap {
-      max-width: 800px;
+    /* Results */
+    .page {
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 24px 16px 56px;
+      padding: 0 40px 60px;
     }
-
     #result { display: none; }
 
-    .card {
-      background: var(--fx-white);
-      border: 1px solid var(--fx-border);
-      margin-bottom: 16px;
+    .result-header {
+      padding: 28px 0 8px;
+      border-bottom: 1px solid #e5e5e5;
+      margin-bottom: 0;
     }
-
-    .status-block {
-      padding: 24px 28px 20px;
-    }
-    .status-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--fx-muted);
-      margin-bottom: 8px;
-    }
-    .status-title {
-      font-size: 26px;
-      font-weight: 400;
-      color: var(--fx-purple);
-      margin-bottom: 6px;
-    }
-    .status-detail {
-      font-size: 15px;
-      color: var(--fx-muted);
-      margin-bottom: 16px;
-    }
-    .status-tn {
+    .result-header .tracking-label {
       font-size: 13px;
-      color: var(--fx-muted);
+      color: #666;
+      margin-bottom: 4px;
     }
-    .status-tn strong {
-      color: var(--fx-text);
-      font-family: Consolas, "Courier New", monospace;
+    .result-header .tracking-id {
+      font-size: 15px;
       font-weight: 600;
+      font-family: Consolas, "Courier New", monospace;
+      color: #333;
       letter-spacing: 0.02em;
     }
 
-    .meta-grid {
+    /* Key status block */
+    .key-status {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      border-top: 1px solid var(--fx-border);
+      grid-template-columns: 1.4fr 1fr;
+      gap: 0;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 28px 0 32px;
     }
-    @media (max-width: 640px) {
-      .meta-grid { grid-template-columns: 1fr 1fr; }
-    }
-    .meta-cell {
-      padding: 16px 20px;
-      border-right: 1px solid var(--fx-border);
-    }
-    .meta-cell:last-child { border-right: none; }
-    @media (max-width: 640px) {
-      .meta-cell:nth-child(2n) { border-right: none; }
-      .meta-cell:nth-child(1),
-      .meta-cell:nth-child(2) { border-bottom: 1px solid var(--fx-border); }
-    }
-    .meta-cell .lab {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--fx-muted);
-      margin-bottom: 4px;
-    }
-    .meta-cell .val {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--fx-text);
+    @media (max-width: 800px) {
+      .key-status { grid-template-columns: 1fr; gap: 28px; }
+      .page, .track-module, .main-nav, .util-bar { padding-left: 20px; padding-right: 20px; }
     }
 
-    .section-pad { padding: 22px 28px; }
-    .section-title {
-      font-size: 15px;
+    .status-main .eyebrow {
+      font-size: 12px;
       font-weight: 700;
-      color: var(--fx-text);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .status-main .headline {
+      font-size: 32px;
+      font-weight: 300;
+      color: #333;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .status-main .subhead {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .delivery-date {
+      font-size: 15px;
+      color: #333;
+    }
+    .delivery-date strong {
+      font-weight: 700;
+    }
+
+    .route-summary {
+      border-left: 1px solid #e5e5e5;
+      padding-left: 36px;
+    }
+    @media (max-width: 800px) {
+      .route-summary {
+        border-left: none;
+        padding-left: 0;
+        border-top: 1px solid #e5e5e5;
+        padding-top: 24px;
+      }
+    }
+    .route-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 8px;
       margin-bottom: 16px;
     }
+    .route-row:last-child { margin-bottom: 0; }
+    .route-row .rk {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #666;
+      padding-top: 2px;
+    }
+    .route-row .rv {
+      font-size: 15px;
+      color: #333;
+    }
+    .route-row .rv strong {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
 
-    .progress-labels {
+    /* Progress strip */
+    .progress-strip {
+      background: #fafafa;
+      border: 1px solid #e5e5e5;
+      padding: 20px 24px;
+      margin: 28px 0;
+    }
+    .progress-strip .ps-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 12px;
+    }
+    .ps-labels {
       display: flex;
       justify-content: space-between;
       font-size: 12px;
-      color: var(--fx-muted);
+      color: #666;
       margin-bottom: 8px;
     }
-    .bar {
-      height: 8px;
-      background: #e8e8e8;
-      border-radius: 4px;
+    .ps-bar {
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
       overflow: hidden;
     }
-    .bar-fill {
+    .ps-fill {
       height: 100%;
       width: 50%;
-      background: var(--fx-purple);
-      border-radius: 4px;
+      background: #4d148c;
+      border-radius: 3px;
       transition: width 0.35s ease;
     }
-    .progress-note {
-      margin-top: 12px;
+    .ps-meta {
+      margin-top: 10px;
       font-size: 13px;
-      color: var(--fx-muted);
+      color: #666;
     }
-    .progress-note strong { color: var(--fx-purple); font-weight: 700; }
+    .ps-meta strong { color: #4d148c; }
 
-    .location-box {
-      background: #f9f7fc;
-      border: 1px solid #e8e0f0;
-      border-left: 4px solid var(--fx-purple);
-      padding: 14px 16px;
-      margin-top: 16px;
+    /* Location callout */
+    .loc-callout {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 18px 0 8px;
+      border-bottom: 1px solid #e5e5e5;
+      margin-bottom: 8px;
     }
-    .location-box .loc-label {
+    .loc-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #4d148c;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
+      flex-shrink: 0;
+      letter-spacing: 0.02em;
+    }
+    .loc-body .loc-k {
+      font-size: 12px;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--fx-muted);
+      color: #666;
       margin-bottom: 4px;
     }
-    .location-box .loc-value {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--fx-text);
+    .loc-body .loc-v {
+      font-size: 18px;
+      font-weight: 400;
+      color: #333;
     }
-    .location-box .loc-note {
-      font-size: 13px;
-      color: var(--fx-muted);
+    .loc-body .loc-s {
+      font-size: 14px;
+      color: #666;
       margin-top: 4px;
     }
 
-    .timeline { position: relative; padding-left: 24px; }
-    .timeline::before {
-      content: "";
-      position: absolute;
-      left: 5px;
-      top: 6px;
-      bottom: 6px;
-      width: 2px;
-      background: var(--fx-line);
+    /* Travel history */
+    .history-section {
+      padding: 28px 0 8px;
     }
-    .tprog {
-      position: absolute;
-      left: 5px;
-      top: 6px;
-      width: 2px;
-      background: var(--fx-purple);
-      z-index: 1;
-    }
-    .ti {
-      position: relative;
-      padding-bottom: 20px;
-    }
-    .ti:last-child { padding-bottom: 0; }
-    .td {
-      position: absolute;
-      left: -24px;
-      top: 4px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #ccc;
-      border: 2px solid #fff;
-      z-index: 2;
-    }
-    .ti.done .td { background: var(--fx-purple); }
-    .ti.current .td {
-      background: var(--fx-orange);
-      box-shadow: 0 0 0 3px rgba(255, 98, 0, 0.2);
-    }
-    .ti.pending { opacity: 0.42; }
-    .tit {
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--fx-text);
-    }
-    .ti.current .tit { color: var(--fx-purple); }
-    .til, .titm {
-      font-size: 13px;
-      color: var(--fx-muted);
-      margin-top: 2px;
+    .history-section h2 {
+      font-size: 18px;
+      font-weight: 400;
+      color: #333;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e5e5e5;
     }
 
-    .ship-grid {
+    .th-list { list-style: none; }
+    .th-item {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
+      grid-template-columns: 160px 1fr;
+      gap: 20px;
+      padding: 16px 0;
+      border-bottom: 1px solid #eee;
+      position: relative;
     }
-    @media (max-width: 560px) {
-      .ship-grid { grid-template-columns: 1fr; }
+    @media (max-width: 600px) {
+      .th-item { grid-template-columns: 1fr; gap: 4px; }
     }
-    .ship-block h3 {
-      font-size: 11px;
-      font-weight: 600;
+    .th-item:last-child { border-bottom: none; }
+    .th-time {
+      font-size: 13px;
+      color: #666;
+    }
+    .th-content .th-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 2px;
+    }
+    .th-content .th-loc {
+      font-size: 13px;
+      color: #666;
+    }
+    .th-item.current .th-title {
+      color: #4d148c;
+    }
+    .th-item.pending {
+      opacity: 0.45;
+    }
+    .th-item.pending .th-time {
+      color: #999;
+    }
+
+    /* Service / details footer block */
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 32px;
+      padding: 28px 0;
+      margin-top: 12px;
+      border-top: 1px solid #e5e5e5;
+    }
+    @media (max-width: 700px) {
+      .details-grid { grid-template-columns: 1fr; gap: 20px; }
+    }
+    .detail-col h3 {
+      font-size: 12px;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--fx-muted);
-      margin-bottom: 8px;
+      color: #666;
+      margin-bottom: 10px;
     }
-    .ship-block p {
+    .detail-col p {
       font-size: 14px;
+      color: #333;
       line-height: 1.55;
     }
 
-    .fx-footer {
-      text-align: center;
-      padding: 20px;
+    /* Site footer */
+    .site-footer {
+      background: #4d148c;
+      color: rgba(255,255,255,0.85);
+      padding: 28px 40px;
       font-size: 12px;
-      color: var(--fx-muted);
-      border-top: 1px solid var(--fx-border);
-      background: var(--fx-white);
+      margin-top: 40px;
     }
+    .site-footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .site-footer a {
+      color: #fff;
+      text-decoration: none;
+      margin-right: 18px;
+    }
+    .site-footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-  <header class="fx-header">
-    <div class="fx-logo">Fed<span>Ex</span></div>
-    <div class="fx-header-links">
+  <div class="util-bar">
+    <a href="#">Sign Up / Log In</a>
+    <a href="#">Support</a>
+  </div>
+
+  <nav class="main-nav">
+    <div class="logo">Fed<span>Ex</span></div>
+    <div class="nav-links">
       <a href="#">Shipping</a>
       <a href="#">Tracking</a>
+      <a href="#">Locations</a>
       <a href="#">Support</a>
     </div>
-  </header>
+  </nav>
 
-  <div class="fx-search-band">
-    <div class="fx-search-inner">
-      <h1>Track your package</h1>
-      <div class="fx-search-row">
-        <input id="tnInput" type="text" placeholder="Enter tracking number" autocomplete="off" value="" />
+  <div class="track-module">
+    <div class="track-module-inner">
+      <h1>Track a package or shipment</h1>
+      <div class="track-form">
+        <input id="tnInput" type="text" placeholder="Tracking ID" autocomplete="off" value="" aria-label="Tracking ID" />
         <button type="button" id="btnTrack" onclick="doTrack()">TRACK</button>
       </div>
-      <p class="fx-search-hint">Enter your tracking number to view the latest status.</p>
-      <div class="fx-error" id="errBox"></div>
+      <p class="track-help">Enter up to 30 tracking numbers, one per line.</p>
+      <div class="track-error" id="errBox"></div>
     </div>
   </div>
 
-  <div class="wrap">
+  <div class="page">
     <div id="result">
-      <div class="card">
-        <div class="status-block">
-          <div class="status-label">Status</div>
-          <div class="status-title" id="statusTitle">In transit</div>
-          <div class="status-detail" id="statusDetail">—</div>
-          <div class="status-tn">Tracking ID: <strong id="tnDisplay">—</strong></div>
+      <div class="result-header">
+        <div class="tracking-label">Tracking ID</div>
+        <div class="tracking-id" id="tnDisplay">—</div>
+      </div>
+
+      <div class="key-status">
+        <div class="status-main">
+          <div class="eyebrow">Status</div>
+          <div class="headline" id="statusTitle">In transit</div>
+          <div class="subhead" id="statusDetail">—</div>
+          <div class="delivery-date">
+            Scheduled delivery: <strong id="eta">Pending</strong>
+          </div>
         </div>
-        <div class="meta-grid">
-          <div class="meta-cell">
-            <div class="lab">From</div>
-            <div class="val">Houston, TX</div>
+        <div class="route-summary">
+          <div class="route-row">
+            <div class="rk">From</div>
+            <div class="rv"><strong>Houston, TX</strong>United States</div>
           </div>
-          <div class="meta-cell">
-            <div class="lab">To</div>
-            <div class="val">Elizabethton, TN</div>
+          <div class="route-row">
+            <div class="rk">To</div>
+            <div class="rv">
+              <strong>Elizabethton, TN</strong>
+              Peggy Palmer<br>
+              1201 Thomas Blvd<br>
+              Elizabethton, TN 37643
+            </div>
           </div>
-          <div class="meta-cell">
-            <div class="lab">Scheduled delivery</div>
-            <div class="val" id="eta">—</div>
-          </div>
-          <div class="meta-cell">
-            <div class="lab">Service</div>
-            <div class="val" id="carrier">FedEx Ground</div>
+          <div class="route-row">
+            <div class="rk">Service</div>
+            <div class="rv" id="carrier">FedEx Ground</div>
           </div>
         </div>
       </div>
 
-      <div class="card section-pad">
-        <div class="section-title">On the way</div>
-        <div class="progress-labels">
+      <div class="progress-strip">
+        <div class="ps-title">Shipment progress</div>
+        <div class="ps-labels">
           <span>Houston, TX</span>
           <span>Elizabethton, TN</span>
         </div>
-        <div class="bar"><div class="bar-fill" id="bar" style="width:50%"></div></div>
-        <p class="progress-note">
+        <div class="ps-bar"><div class="ps-fill" id="bar" style="width:50%"></div></div>
+        <div class="ps-meta">
           <strong id="pctText">50%</strong> of the route complete ·
           <span id="remainText">50% remaining</span>
-        </p>
-        <div class="location-box">
-          <div class="loc-label">Current location in the network</div>
-          <div class="loc-value" id="mapLoc">Memphis, TN corridor</div>
-          <div class="loc-note" id="mapNote">Mid-route on the Texas–Tennessee corridor · approximately 50% complete</div>
         </div>
       </div>
 
-      <div class="card section-pad">
-        <div class="section-title">Travel history</div>
-        <div class="timeline" id="timeline"></div>
+      <div class="loc-callout">
+        <div class="loc-icon">FX</div>
+        <div class="loc-body">
+          <div class="loc-k">Current location in the FedEx network</div>
+          <div class="loc-v" id="mapLoc">Memphis, TN</div>
+          <div class="loc-s" id="mapNote">Package is in transit · mid-route to destination</div>
+        </div>
       </div>
 
-      <div class="card section-pad">
-        <div class="ship-grid">
-          <div class="ship-block">
-            <h3>Ship from</h3>
-            <p>Houston, TX<br>United States</p>
-          </div>
-          <div class="ship-block">
-            <h3>Ship to</h3>
-            <p>
-              <strong>Peggy Palmer</strong><br>
-              1201 Thomas Blvd<br>
-              Elizabethton, TN 37643<br>
-              United States<br>
-              423.491-0319
-            </p>
-          </div>
+      <div class="history-section">
+        <h2>Travel history</h2>
+        <ul class="th-list" id="timeline"></ul>
+      </div>
+
+      <div class="details-grid">
+        <div class="detail-col">
+          <h3>Ship date</h3>
+          <p id="shipDate">—</p>
+        </div>
+        <div class="detail-col">
+          <h3>Standard transit</h3>
+          <p>FedEx Ground</p>
+        </div>
+        <div class="detail-col">
+          <h3>Last updated</h3>
+          <p id="asof">—</p>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="fx-footer">
-    Updated <span id="asof">—</span>
-  </div>
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <div>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Site Map</a>
+      </div>
+      <div>© FedEx</div>
+    </div>
+  </footer>
 
   <script>
-    const REGISTERED = {
-      '1188187236402382053': true
-    };
+    const REGISTERED = { '1188187236402382053': true };
 
     function cleanTn(n) {
       return String(n || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
     }
-
     function isRegistered(raw) {
       return !!REGISTERED[cleanTn(raw)];
     }
-
     function showErr(msg) {
-      const el = document.getElementById('errBox');
+      var el = document.getElementById('errBox');
       el.style.display = msg ? 'block' : 'none';
       el.textContent = msg || '';
     }
 
     function renderTimeline(events) {
-      const root = document.getElementById('timeline');
+      var root = document.getElementById('timeline');
       if (!events || !events.length) {
-        root.innerHTML = '<p style="color:#666">No travel history available.</p>';
+        root.innerHTML = '<li class="th-item"><div class="th-content"><div class="th-title">No travel history available</div></div></li>';
         return;
       }
-      let html = '<div class="tprog" id="prog"></div>';
+      var html = '';
       events.forEach(function (e) {
         var st = e.state || 'done';
-        html += '<div class="ti ' + st + '"><div class="td"></div>';
-        html += '<div class="tit">' + (e.title || 'Update') + '</div>';
-        if (e.loc) html += '<div class="til">' + e.loc + '</div>';
-        if (e.time) html += '<div class="titm">' + e.time + '</div>';
-        html += '</div>';
+        html += '<li class="th-item ' + st + '">';
+        html += '<div class="th-time">' + (e.time || (st === 'pending' ? '—' : '')) + '</div>';
+        html += '<div class="th-content">';
+        html += '<div class="th-title">' + (e.title || 'Update') + '</div>';
+        if (e.loc) html += '<div class="th-loc">' + e.loc + '</div>';
+        html += '</div></li>';
       });
       root.innerHTML = html;
-      requestAnimationFrame(function () {
-        var cur = root.querySelector('.ti.current') || root.querySelector('.ti.done');
-        var prog = document.getElementById('prog');
-        if (cur && prog) prog.style.height = (cur.offsetTop + 4) + 'px';
-      });
     }
 
     function applyData(d) {
@@ -483,7 +581,7 @@
       document.getElementById('result').style.display = 'block';
       document.getElementById('statusTitle').textContent = d.status || 'In transit';
       document.getElementById('statusDetail').textContent =
-        d.statusDetail || d.currentLocation || 'Package is moving through the FedEx network';
+        d.statusDetail || d.currentLocation || 'Your package is moving through our network';
       document.getElementById('tnDisplay').textContent = d.trackingNumber || '—';
       document.getElementById('eta').textContent = d.eta || 'Pending';
       document.getElementById('carrier').textContent = d.carrier || 'FedEx Ground';
@@ -491,30 +589,47 @@
       document.getElementById('pctText').textContent = prog + '%';
       document.getElementById('remainText').textContent = (100 - prog) + '% remaining';
       document.getElementById('mapLoc').textContent =
-        d.currentLocation || 'Memphis, TN corridor';
+        d.currentLocation || 'Memphis, TN';
       document.getElementById('mapNote').textContent =
-        'Mid-route on the Texas–Tennessee corridor · approximately 50% complete';
+        'Package is in transit · mid-route to destination';
       document.getElementById('asof').textContent = new Date().toLocaleString('en-US');
+
+      // Ship date from first event if available
+      if (d.events && d.events.length) {
+        var first = d.events[d.events.length - 1];
+        document.getElementById('shipDate').textContent = first.time || '—';
+      }
+
       renderTimeline(d.events || []);
       document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function fallbackPeggy() {
+      var now = new Date();
+      function fmt(hAgo) {
+        var d = new Date(now.getTime() - hAgo * 3600000);
+        return d.toLocaleString('en-US', {
+          weekday: 'short', month: 'short', day: 'numeric',
+          hour: 'numeric', minute: '2-digit'
+        });
+      }
       applyData({
         trackingNumber: '11881-87236-402382053',
         status: 'In transit',
         statusDetail: 'Arrived at FedEx location',
         progress: 50,
-        currentLocation: 'Memphis, TN corridor',
-        eta: 'Pending',
+        currentLocation: 'MEMPHIS, TN US',
+        eta: new Date(now.getTime() + 36 * 3600000).toLocaleDateString('en-US', {
+          weekday: 'long', month: 'long', day: 'numeric'
+        }),
         carrier: 'FedEx Ground',
         events: [
-          { title: 'Shipment information sent to FedEx', loc: 'Houston, TX US', time: '', state: 'done' },
-          { title: 'Picked up', loc: 'Houston, TX', time: '', state: 'done' },
-          { title: 'Left FedEx origin facility', loc: 'Houston, TX', time: '', state: 'done' },
-          { title: 'In transit', loc: 'Memphis, TN corridor', time: '', state: 'current' },
-          { title: 'On FedEx vehicle for delivery', loc: 'Elizabethton, TN', time: '', state: 'pending' },
-          { title: 'Delivered', loc: 'Elizabethton, TN', time: '', state: 'pending' }
+          { title: 'Shipment information sent to FedEx', loc: 'HOUSTON, TX US', time: fmt(48), state: 'done' },
+          { title: 'Picked up', loc: 'HOUSTON, TX US', time: fmt(42), state: 'done' },
+          { title: 'Left FedEx origin facility', loc: 'HOUSTON, TX US', time: fmt(38), state: 'done' },
+          { title: 'Arrived at FedEx location', loc: 'MEMPHIS, TN US', time: fmt(6), state: 'current' },
+          { title: 'On FedEx vehicle for delivery', loc: 'ELIZABETHTON, TN US', time: '', state: 'pending' },
+          { title: 'Delivered', loc: 'ELIZABETHTON, TN US', time: '', state: 'pending' }
         ]
       });
     }
@@ -527,10 +642,8 @@
         showErr('Please enter a tracking number.');
         return;
       }
-
       btn.disabled = true;
       btn.textContent = '…';
-
       try {
         if (isRegistered(raw)) {
           try {
@@ -550,13 +663,13 @@
             var res2 = await fetch('/api/track?number=' + encodeURIComponent(raw));
             var d2 = await res2.json();
             if (d2.status === 'Not found' || !d2.events || !d2.events.length) {
-              showErr('Tracking number not found. Please check the number and try again.');
+              showErr('Sorry, we are unable to retrieve your tracking results at this time. Please check your tracking number and try again.');
               document.getElementById('result').style.display = 'none';
             } else {
               applyData(d2);
             }
           } catch (e2) {
-            showErr('Unable to retrieve tracking information. Please try again.');
+            showErr('Sorry, we are unable to retrieve your tracking results at this time.');
           }
         }
       } finally {

@@ -4,18 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Track Your Package | FedEx</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <style>
     :root {
       --fx-purple: #4d148c;
       --fx-purple-dark: #3a0f6a;
       --fx-orange: #ff6200;
-      --fx-bg: #f2f2f2;
+      --fx-bg: #f5f5f5;
       --fx-white: #ffffff;
       --fx-text: #333333;
       --fx-muted: #666666;
-      --fx-border: #dddddd;
-      --fx-green: #008a00;
+      --fx-border: #e0e0e0;
+      --fx-line: #d0d0d0;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -23,58 +22,56 @@
       background: var(--fx-bg);
       color: var(--fx-text);
       font-size: 14px;
-      line-height: 1.45;
+      line-height: 1.5;
       min-height: 100vh;
     }
 
-    /* FedEx-style header */
     .fx-header {
       background: var(--fx-purple);
       color: #fff;
-      padding: 0 24px;
       height: 56px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 0 28px;
     }
     .fx-logo {
       font-size: 22px;
       font-weight: 800;
-      letter-spacing: -0.5px;
       font-style: italic;
+      letter-spacing: -0.4px;
     }
     .fx-logo span { color: var(--fx-orange); }
     .fx-header-links a {
-      color: rgba(255,255,255,0.9);
+      color: rgba(255,255,255,0.92);
       text-decoration: none;
       font-size: 13px;
-      margin-left: 20px;
+      margin-left: 22px;
     }
+    .fx-header-links a:hover { text-decoration: underline; }
 
-    /* Tracking search band */
     .fx-search-band {
       background: var(--fx-white);
       border-bottom: 1px solid var(--fx-border);
-      padding: 28px 20px 24px;
+      padding: 32px 20px 28px;
     }
     .fx-search-inner {
-      max-width: 720px;
+      max-width: 640px;
       margin: 0 auto;
     }
     .fx-search-inner h1 {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 400;
       color: var(--fx-purple);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .fx-search-row {
       display: flex;
-      gap: 0;
-      max-width: 560px;
+      max-width: 520px;
     }
     .fx-search-row input {
       flex: 1;
-      height: 44px;
+      height: 46px;
       border: 1px solid #999;
       border-right: none;
       padding: 0 14px;
@@ -82,71 +79,78 @@
       font-family: inherit;
       outline: none;
     }
-    .fx-search-row input:focus { border-color: var(--fx-purple); }
+    .fx-search-row input:focus {
+      border-color: var(--fx-purple);
+    }
     .fx-search-row button {
-      height: 44px;
-      padding: 0 22px;
+      height: 46px;
+      padding: 0 24px;
       background: var(--fx-purple);
       color: #fff;
       border: none;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.03em;
       font-family: inherit;
       cursor: pointer;
     }
     .fx-search-row button:hover { background: var(--fx-purple-dark); }
+    .fx-search-row button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
     .fx-search-hint {
-      margin-top: 10px;
+      margin-top: 12px;
       font-size: 12px;
       color: var(--fx-muted);
     }
     .fx-error {
       display: none;
-      margin-top: 12px;
-      padding: 10px 14px;
-      background: #fff3f0;
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: #fff8f5;
       border-left: 4px solid var(--fx-orange);
-      color: #333;
       font-size: 13px;
+      color: #333;
     }
 
     .wrap {
-      max-width: 960px;
+      max-width: 800px;
       margin: 0 auto;
-      padding: 20px 16px 48px;
+      padding: 24px 16px 56px;
     }
 
-    /* Result area hidden until track */
     #result { display: none; }
 
-    .status-card {
+    .card {
       background: var(--fx-white);
       border: 1px solid var(--fx-border);
       margin-bottom: 16px;
     }
-    .status-top {
-      padding: 20px 24px 16px;
-      border-bottom: 1px solid var(--fx-border);
+
+    .status-block {
+      padding: 24px 28px 20px;
     }
     .status-label {
-      font-size: 12px;
+      font-size: 11px;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
       color: var(--fx-muted);
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .status-title {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 400;
       color: var(--fx-purple);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
-    .status-sub {
-      font-size: 14px;
+    .status-detail {
+      font-size: 15px;
       color: var(--fx-muted);
+      margin-bottom: 16px;
     }
     .status-tn {
-      margin-top: 12px;
       font-size: 13px;
       color: var(--fx-muted);
     }
@@ -154,46 +158,49 @@
       color: var(--fx-text);
       font-family: Consolas, "Courier New", monospace;
       font-weight: 600;
+      letter-spacing: 0.02em;
     }
 
     .meta-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 0;
       border-top: 1px solid var(--fx-border);
     }
-    @media (max-width: 700px) {
+    @media (max-width: 640px) {
       .meta-grid { grid-template-columns: 1fr 1fr; }
     }
     .meta-cell {
-      padding: 14px 20px;
+      padding: 16px 20px;
       border-right: 1px solid var(--fx-border);
     }
     .meta-cell:last-child { border-right: none; }
+    @media (max-width: 640px) {
+      .meta-cell:nth-child(2n) { border-right: none; }
+      .meta-cell:nth-child(1),
+      .meta-cell:nth-child(2) { border-bottom: 1px solid var(--fx-border); }
+    }
     .meta-cell .lab {
       font-size: 11px;
+      font-weight: 600;
       text-transform: uppercase;
+      letter-spacing: 0.04em;
       color: var(--fx-muted);
       margin-bottom: 4px;
     }
     .meta-cell .val {
       font-size: 14px;
       font-weight: 600;
-    }
-
-    /* Progress */
-    .progress-section {
-      background: var(--fx-white);
-      border: 1px solid var(--fx-border);
-      padding: 20px 24px;
-      margin-bottom: 16px;
-    }
-    .progress-section h2 {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 14px;
       color: var(--fx-text);
     }
+
+    .section-pad { padding: 22px 28px; }
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--fx-text);
+      margin-bottom: 16px;
+    }
+
     .progress-labels {
       display: flex;
       justify-content: space-between;
@@ -203,7 +210,7 @@
     }
     .bar {
       height: 8px;
-      background: #e5e5e5;
+      background: #e8e8e8;
       border-radius: 4px;
       overflow: hidden;
     }
@@ -212,77 +219,71 @@
       width: 20%;
       background: var(--fx-purple);
       border-radius: 4px;
-      transition: width 0.4s ease;
+      transition: width 0.35s ease;
     }
-    .progress-pct {
-      margin-top: 10px;
+    .progress-note {
+      margin-top: 12px;
       font-size: 13px;
       color: var(--fx-muted);
     }
-    .progress-pct strong { color: var(--fx-purple); }
+    .progress-note strong { color: var(--fx-purple); font-weight: 700; }
 
-    /* Map + timeline layout */
-    .detail-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 16px;
-      margin-bottom: 16px;
+    .location-box {
+      background: #f9f7fc;
+      border: 1px solid #e8e0f0;
+      border-left: 4px solid var(--fx-purple);
+      padding: 14px 16px;
+      margin-top: 16px;
     }
-    @media (max-width: 800px) {
-      .detail-grid { grid-template-columns: 1fr; }
-    }
-
-    .panel {
-      background: var(--fx-white);
-      border: 1px solid var(--fx-border);
-    }
-    .panel-h {
-      padding: 12px 18px;
-      border-bottom: 1px solid var(--fx-border);
-      font-size: 14px;
+    .location-box .loc-label {
+      font-size: 11px;
       font-weight: 600;
-      background: #fafafa;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--fx-muted);
+      margin-bottom: 4px;
     }
-    #map {
-      height: 360px;
-      width: 100%;
-      background: #e8ecf1;
+    .location-box .loc-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--fx-text);
     }
-    .map-foot {
-      padding: 12px 18px;
+    .location-box .loc-note {
       font-size: 13px;
       color: var(--fx-muted);
-      border-top: 1px solid var(--fx-border);
+      margin-top: 4px;
     }
-    .map-foot strong { color: var(--fx-text); }
 
-    .timeline-body { padding: 18px 18px 18px 20px; }
-    .timeline { position: relative; padding-left: 22px; }
+    /* Timeline */
+    .timeline { position: relative; padding-left: 24px; }
     .timeline::before {
       content: "";
       position: absolute;
-      left: 4px;
+      left: 5px;
       top: 6px;
       bottom: 6px;
       width: 2px;
-      background: #ddd;
+      background: var(--fx-line);
     }
     .tprog {
       position: absolute;
-      left: 4px;
+      left: 5px;
       top: 6px;
       width: 2px;
       background: var(--fx-purple);
       z-index: 1;
     }
-    .ti { position: relative; padding-bottom: 18px; }
+    .ti {
+      position: relative;
+      padding-bottom: 20px;
+    }
     .ti:last-child { padding-bottom: 0; }
     .td {
       position: absolute;
-      left: -22px;
-      top: 3px;
-      width: 10px;
-      height: 10px;
+      left: -24px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       background: #ccc;
       border: 2px solid #fff;
@@ -291,45 +292,49 @@
     .ti.done .td { background: var(--fx-purple); }
     .ti.current .td {
       background: var(--fx-orange);
-      box-shadow: 0 0 0 3px rgba(255, 98, 0, 0.25);
+      box-shadow: 0 0 0 3px rgba(255, 98, 0, 0.2);
     }
-    .ti.pending { opacity: 0.4; }
-    .tit { font-weight: 600; font-size: 14px; }
-    .ti.current .tit { color: var(--fx-purple); }
-    .til, .titm { font-size: 13px; color: var(--fx-muted); margin-top: 2px; }
-
-    .ship-to {
-      background: var(--fx-white);
-      border: 1px solid var(--fx-border);
-      padding: 18px 24px;
-      margin-bottom: 16px;
-    }
-    .ship-to h2 {
-      font-size: 14px;
+    .ti.pending { opacity: 0.42; }
+    .tit {
       font-weight: 600;
-      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--fx-text);
     }
-    .ship-to p { font-size: 14px; line-height: 1.6; }
+    .ti.current .tit { color: var(--fx-purple); }
+    .til, .titm {
+      font-size: 13px;
+      color: var(--fx-muted);
+      margin-top: 2px;
+    }
+
+    .ship-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 560px) {
+      .ship-grid { grid-template-columns: 1fr; }
+    }
+    .ship-block h3 {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--fx-muted);
+      margin-bottom: 8px;
+    }
+    .ship-block p {
+      font-size: 14px;
+      line-height: 1.55;
+    }
 
     .fx-footer {
       text-align: center;
-      padding: 24px;
+      padding: 20px;
       font-size: 12px;
       color: var(--fx-muted);
-    }
-
-    .map-label {
-      background: var(--fx-purple);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 2px;
-      white-space: nowrap;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    }
-    .map-label.current {
-      background: var(--fx-orange);
+      border-top: 1px solid var(--fx-border);
+      background: var(--fx-white);
     }
   </style>
 </head>
@@ -348,20 +353,21 @@
       <h1>Track your package</h1>
       <div class="fx-search-row">
         <input id="tnInput" type="text" placeholder="Enter tracking number" autocomplete="off" />
-        <button type="button" onclick="doTrack()">TRACK</button>
+        <button type="button" id="btnTrack" onclick="doTrack()">TRACK</button>
       </div>
-      <p class="fx-search-hint">Enter a tracking number to view package location in the network.</p>
+      <p class="fx-search-hint">Enter your tracking number to view the latest status.</p>
       <div class="fx-error" id="errBox"></div>
     </div>
   </div>
 
   <div class="wrap">
     <div id="result">
-      <div class="status-card">
-        <div class="status-top">
+      <!-- Status -->
+      <div class="card">
+        <div class="status-block">
           <div class="status-label">Status</div>
           <div class="status-title" id="statusTitle">In transit</div>
-          <div class="status-sub" id="statusSub">—</div>
+          <div class="status-detail" id="statusDetail">—</div>
           <div class="status-tn">Tracking ID: <strong id="tnDisplay">—</strong></div>
         </div>
         <div class="meta-grid">
@@ -379,126 +385,79 @@
           </div>
           <div class="meta-cell">
             <div class="lab">Service</div>
-            <div class="val" id="carrier">Ground</div>
+            <div class="val" id="carrier">FedEx Ground</div>
           </div>
         </div>
       </div>
 
-      <div class="progress-section">
-        <h2>On the way</h2>
+      <!-- Progress + location -->
+      <div class="card section-pad">
+        <div class="section-title">On the way</div>
         <div class="progress-labels">
           <span>Houston, TX</span>
           <span>Elizabethton, TN</span>
         </div>
         <div class="bar"><div class="bar-fill" id="bar" style="width:20%"></div></div>
-        <p class="progress-pct">
+        <p class="progress-note">
           <strong id="pctText">20%</strong> of the route complete ·
           <span id="remainText">80% remaining</span>
         </p>
-      </div>
-
-      <div class="detail-grid">
-        <div class="panel">
-          <div class="panel-h">Package location in the network</div>
-          <div id="map"></div>
-          <div class="map-foot">
-            <strong id="mapLoc">Texarkana, TX / AR corridor</strong>
-            <span id="mapNote"> — approximately 7 hours from Houston origin (checkpoint 2).</span>
-          </div>
-        </div>
-        <div class="panel">
-          <div class="panel-h">Travel history</div>
-          <div class="timeline-body">
-            <div class="timeline" id="timeline"></div>
-          </div>
+        <div class="location-box">
+          <div class="loc-label">Current location in the network</div>
+          <div class="loc-value" id="mapLoc">Texarkana, TX / AR corridor</div>
+          <div class="loc-note" id="mapNote">Approximately 7 hours from Houston origin · Checkpoint 2</div>
         </div>
       </div>
 
-      <div class="ship-to">
-        <h2>Ship to</h2>
-        <p>
-          <strong>Peggy Palmer</strong><br>
-          1201 Thomas Blvd<br>
-          Elizabethton, TN 37643<br>
-          423.491-0319
-        </p>
+      <!-- Travel history -->
+      <div class="card section-pad">
+        <div class="section-title">Travel history</div>
+        <div class="timeline" id="timeline"></div>
+      </div>
+
+      <!-- Addresses -->
+      <div class="card section-pad">
+        <div class="ship-grid">
+          <div class="ship-block">
+            <h3>Ship from</h3>
+            <p>Houston, TX<br>United States</p>
+          </div>
+          <div class="ship-block">
+            <h3>Ship to</h3>
+            <p>
+              <strong>Peggy Palmer</strong><br>
+              1201 Thomas Blvd<br>
+              Elizabethton, TN 37643<br>
+              United States<br>
+              423.491-0319
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="fx-footer">
-    Tracking results · Updated <span id="asof">—</span>
+    Updated <span id="asof">—</span>
   </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script>
     const REGISTERED = {
-      '1188187236402382053': true,
-      '11881-87236-402382053': true
+      '1188187236402382053': true
     };
-
-    const ORIGIN = { lat: 29.7604, lng: -95.3698 };
-    const CURRENT = { lat: 33.4251, lng: -94.0477 }; // Texarkana
-    const DEST = { lat: 36.3487, lng: -82.2107 };
-
-    let map, mapReady = false;
 
     function cleanTn(n) {
       return String(n || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
     }
 
     function isRegistered(raw) {
-      const c = cleanTn(raw);
-      return !!REGISTERED[c] || c === '1188187236402382053';
+      return !!REGISTERED[cleanTn(raw)];
     }
 
     function showErr(msg) {
       const el = document.getElementById('errBox');
       el.style.display = msg ? 'block' : 'none';
       el.textContent = msg || '';
-    }
-
-    function initMap() {
-      if (mapReady) {
-        map.invalidateSize();
-        return;
-      }
-      map = L.map('map', { scrollWheelZoom: false, zoomControl: true }).setView([32.5, -88], 6);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap',
-        maxZoom: 18
-      }).addTo(map);
-
-      L.polyline([[ORIGIN.lat, ORIGIN.lng], [CURRENT.lat, CURRENT.lng]],
-        { color: '#4d148c', weight: 4, opacity: 0.9 }).addTo(map);
-      L.polyline([[CURRENT.lat, CURRENT.lng], [DEST.lat, DEST.lng]],
-        { color: '#bbbbbb', weight: 3, opacity: 0.8, dashArray: '8 8' }).addTo(map);
-
-      const mk = (html, cls) => L.divIcon({
-        className: '',
-        html: '<div class="map-label ' + (cls || '') + '">' + html + '</div>',
-        iconSize: [70, 24],
-        iconAnchor: [35, 12]
-      });
-
-      L.marker([ORIGIN.lat, ORIGIN.lng], { icon: mk('Origin') }).addTo(map)
-        .bindPopup('<strong>Houston, TX</strong><br>Origin facility');
-      L.marker([CURRENT.lat, CURRENT.lng], { icon: mk('Here', 'current') }).addTo(map)
-        .bindPopup('<strong>Current location</strong><br>Texarkana, TX / AR corridor<br>~7 hours from Houston<br>In the network · ~20% of route');
-      L.marker([DEST.lat, DEST.lng], { icon: mk('Destination') }).addTo(map)
-        .bindPopup('<strong>Elizabethton, TN</strong><br>1201 Thomas Blvd<br>Peggy Palmer');
-
-      map.fitBounds(L.latLngBounds([
-        [ORIGIN.lat, ORIGIN.lng],
-        [CURRENT.lat, CURRENT.lng],
-        [DEST.lat, DEST.lng]
-      ]), { padding: [36, 36] });
-
-      mapReady = true;
-      setTimeout(() => {
-        map.invalidateSize();
-        map.panTo([CURRENT.lat, CURRENT.lng]);
-      }, 200);
     }
 
     function renderTimeline(events) {
@@ -508,92 +467,107 @@
         return;
       }
       let html = '<div class="tprog" id="prog"></div>';
-      events.forEach(e => {
-        const st = e.state || 'done';
-        html += '<div class="ti ' + st + '"><div class="td"></div>' +
-          '<div class="tit">' + (e.title || 'Update') + '</div>' +
-          (e.loc ? '<div class="til">' + e.loc + '</div>' : '') +
-          (e.time ? '<div class="titm">' + e.time + '</div>' : '') +
-          '</div>';
+      events.forEach(function (e) {
+        var st = e.state || 'done';
+        html += '<div class="ti ' + st + '"><div class="td"></div>';
+        html += '<div class="tit">' + (e.title || 'Update') + '</div>';
+        if (e.loc) html += '<div class="til">' + e.loc + '</div>';
+        if (e.time) html += '<div class="titm">' + e.time + '</div>';
+        html += '</div>';
       });
       root.innerHTML = html;
-      requestAnimationFrame(() => {
-        const cur = root.querySelector('.ti.current') || root.querySelector('.ti.done');
-        const prog = document.getElementById('prog');
+      requestAnimationFrame(function () {
+        var cur = root.querySelector('.ti.current') || root.querySelector('.ti.done');
+        var prog = document.getElementById('prog');
         if (cur && prog) prog.style.height = (cur.offsetTop + 4) + 'px';
       });
     }
 
     function applyData(d) {
-      const prog = d.progress != null ? d.progress : 20;
+      var prog = d.progress != null ? d.progress : 20;
       document.getElementById('result').style.display = 'block';
       document.getElementById('statusTitle').textContent = d.status || 'In transit';
-      document.getElementById('statusSub').textContent =
-        d.statusDetail || d.currentLocation || 'Package is moving through the network';
+      document.getElementById('statusDetail').textContent =
+        d.statusDetail || d.currentLocation || 'Package is moving through the FedEx network';
       document.getElementById('tnDisplay').textContent = d.trackingNumber || '—';
-      document.getElementById('eta').textContent = d.eta || '—';
+      document.getElementById('eta').textContent = d.eta || 'Pending';
       document.getElementById('carrier').textContent = d.carrier || 'FedEx Ground';
       document.getElementById('bar').style.width = prog + '%';
       document.getElementById('pctText').textContent = prog + '%';
       document.getElementById('remainText').textContent = (100 - prog) + '% remaining';
       document.getElementById('mapLoc').textContent =
         d.currentLocation || 'Texarkana, TX / AR corridor';
+      document.getElementById('mapNote').textContent =
+        'Approximately 7 hours from Houston origin · Checkpoint 2';
       document.getElementById('asof').textContent = new Date().toLocaleString('en-US');
       renderTimeline(d.events || []);
-
-      setTimeout(initMap, 50);
       document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    function fallbackPeggy() {
+      applyData({
+        trackingNumber: '11881-87236-402382053',
+        status: 'In transit',
+        statusDetail: 'Arrived at FedEx location',
+        progress: 20,
+        currentLocation: 'Texarkana, TX / AR corridor',
+        eta: 'Pending',
+        carrier: 'FedEx Ground',
+        events: [
+          { title: 'Shipment information sent to FedEx', loc: 'Houston, TX US', time: '', state: 'done' },
+          { title: 'Picked up', loc: 'Houston, TX', time: '', state: 'done' },
+          { title: 'Left FedEx origin facility', loc: 'Houston, TX', time: '', state: 'done' },
+          { title: 'In transit', loc: 'Texarkana, TX / AR corridor', time: '', state: 'current' },
+          { title: 'On FedEx vehicle for delivery', loc: 'Elizabethton, TN', time: '', state: 'pending' },
+          { title: 'Delivered', loc: 'Elizabethton, TN', time: '', state: 'pending' }
+        ]
+      });
+    }
+
     async function doTrack() {
-      const raw = (document.getElementById('tnInput').value || '').trim();
+      var raw = (document.getElementById('tnInput').value || '').trim();
+      var btn = document.getElementById('btnTrack');
       showErr('');
       if (!raw) {
         showErr('Please enter a tracking number.');
         return;
       }
 
-      // Registered Peggy number → show network location
-      if (isRegistered(raw)) {
-        try {
-          const res = await fetch('/api/track?number=' + encodeURIComponent(raw));
-          const d = await res.json();
-          applyData(d);
-        } catch (e) {
-          // Offline fallback for Peggy
-          applyData({
-            trackingNumber: '11881-87236-402382053',
-            status: 'In transit',
-            statusDetail: 'Second checkpoint · approx. 7 hours from origin',
-            progress: 20,
-            currentLocation: 'Texarkana, TX / AR corridor',
-            eta: '—',
-            carrier: 'FedEx Ground',
-            events: [
-              { title: 'Shipment information sent to FedEx', loc: 'Houston, TX US', time: '', state: 'done' },
-              { title: 'Picked up', loc: 'Houston, TX', time: '', state: 'done' },
-              { title: 'Left FedEx origin facility', loc: 'Houston, TX', time: '', state: 'done' },
-              { title: 'In transit', loc: 'Texarkana, TX / AR corridor', time: '', state: 'current' },
-              { title: 'On FedEx vehicle for delivery', loc: 'Elizabethton, TN', time: '', state: 'pending' },
-              { title: 'Delivered', loc: 'Elizabethton, TN', time: '', state: 'pending' }
-            ]
-          });
-        }
-        return;
-      }
+      btn.disabled = true;
+      btn.textContent = '…';
 
-      // Try API for other numbers
       try {
-        const res = await fetch('/api/track?number=' + encodeURIComponent(raw));
-        const d = await res.json();
-        if (d.status === 'Not found' || (!d.events || !d.events.length)) {
-          showErr('Tracking number not found. Check the number and try again.');
-          document.getElementById('result').style.display = 'none';
-          return;
+        if (isRegistered(raw)) {
+          try {
+            var res = await fetch('/api/track?number=' + encodeURIComponent(raw));
+            var d = await res.json();
+            if (d && d.status && d.status !== 'Not found') {
+              // Prefer FedEx-style wording
+              if (!d.carrier || d.carrier === 'Global Express') d.carrier = 'FedEx Ground';
+              applyData(d);
+            } else {
+              fallbackPeggy();
+            }
+          } catch (e) {
+            fallbackPeggy();
+          }
+        } else {
+          try {
+            var res2 = await fetch('/api/track?number=' + encodeURIComponent(raw));
+            var d2 = await res2.json();
+            if (d2.status === 'Not found' || !d2.events || !d2.events.length) {
+              showErr('Tracking number not found. Please check the number and try again.');
+              document.getElementById('result').style.display = 'none';
+            } else {
+              applyData(d2);
+            }
+          } catch (e2) {
+            showErr('Unable to retrieve tracking information. Please try again.');
+          }
         }
-        applyData(d);
-      } catch (e) {
-        showErr('Unable to retrieve tracking information. Please try again.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'TRACK';
       }
     }
 
@@ -601,7 +575,6 @@
       if (e.key === 'Enter') doTrack();
     });
 
-    // Prefill Peggy TN for convenience (user can clear / change)
     document.getElementById('tnInput').value = '11881-87236-402382053';
   </script>
 </body>

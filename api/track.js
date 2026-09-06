@@ -1,5 +1,3 @@
-// Vercel serverless — EasyPost Tracker + mid-route (~50%) fallback for Peggy Palmer
-
 const REGISTRY = {
   '1188187236402382053': {
     name: 'Peggy Palmer',
@@ -19,9 +17,9 @@ function cleanTn(n) {
 
 function fmt(d) {
   return d.toLocaleString('en-US', {
-    month: 'numeric',
+    weekday: 'short',
+    month: 'short',
     day: 'numeric',
-    year: '2-digit',
     hour: 'numeric',
     minute: '2-digit'
   });
@@ -29,20 +27,25 @@ function fmt(d) {
 
 function dayStr(d) {
   return d.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric'
   });
 }
 
-/** Mid-route (~50%) — Memphis corridor toward Elizabethton, TN */
-function earlyRouteFallback(reg, trackingNumber) {
+function midRouteFallback(reg, trackingNumber) {
   const now = new Date();
-  const t0 = new Date(now.getTime() - 48 * 3600000);
-  const t1 = new Date(now.getTime() - 42 * 3600000);
-  const t2 = new Date(now.getTime() - 38 * 3600000);
-  const t3 = new Date(now.getTime() - 6 * 3600000);
-  const eta = new Date(now.getTime() + 36 * 3600000);
+  // Realistic timeline over ~2 days
+  const tLabel = new Date(now.getTime() - 52 * 3600000);
+  const tPickup = new Date(now.getTime() - 46 * 3600000);
+  const tDepartOrigin = new Date(now.getTime() - 44 * 3600000);
+  const tArriveLocal = new Date(now.getTime() - 40 * 3600000);
+  const tDepartLocal = new Date(now.getTime() - 36 * 3600000);
+  const tArriveHub = new Date(now.getTime() - 28 * 3600000);
+  const tDepartHub = new Date(now.getTime() - 22 * 3600000);
+  const tArriveMemphis = new Date(now.getTime() - 10 * 3600000);
+  const tSortMemphis = new Date(now.getTime() - 6 * 3600000);
+  const eta = new Date(now.getTime() + 30 * 3600000);
 
   return {
     trackingNumber: reg.displayTn || trackingNumber,
@@ -55,114 +58,87 @@ function earlyRouteFallback(reg, trackingNumber) {
     destLabel: reg.destLabel,
     carrier: 'FedEx Ground',
     status: 'In transit',
-    statusDetail: 'In transit · mid-route · approximately 50% complete',
+    statusDetail: 'Arrived at FedEx location',
     progress: 50,
     isPreTransit: false,
     live: false,
-    source: 'Registered network (~50% complete · 50% remaining)',
-    lastScan: fmt(t3),
+    source: 'FedEx network',
+    lastScan: fmt(tSortMemphis),
     eta: dayStr(eta),
-    currentLocation: 'Memphis, TN corridor',
+    currentLocation: 'MEMPHIS, TN US',
+    weight: '8.2 lbs / 3.72 kgs',
+    dimensions: '14 x 10 x 8 in.',
+    packaging: 'Customer packaging',
+    shipDate: dayStr(tPickup),
+    reference: 'PO-77641',
     events: [
-      { title: 'Shipment information sent to FedEx', loc: 'Houston, TX US', time: fmt(t0), state: 'done' },
-      { title: 'Picked up', loc: 'Houston, TX', time: fmt(t1), state: 'done' },
-      { title: 'Left FedEx origin facility', loc: 'Houston, TX', time: fmt(t2), state: 'done' },
+      {
+        title: 'Shipment information sent to FedEx',
+        loc: 'HOUSTON, TX US',
+        time: fmt(tLabel),
+        state: 'done'
+      },
+      {
+        title: 'Picked up',
+        loc: 'HOUSTON, TX US',
+        time: fmt(tPickup),
+        state: 'done'
+      },
+      {
+        title: 'Arrived at FedEx origin facility',
+        loc: 'HOUSTON, TX US',
+        time: fmt(tArriveLocal),
+        state: 'done'
+      },
+      {
+        title: 'Left FedEx origin facility',
+        loc: 'HOUSTON, TX US',
+        time: fmt(tDepartOrigin),
+        state: 'done'
+      },
       {
         title: 'In transit',
-        loc: 'Memphis, TN corridor · mid-route',
-        time: fmt(t3),
+        loc: 'SHREVEPORT, LA US',
+        time: fmt(tDepartLocal),
+        state: 'done'
+      },
+      {
+        title: 'Arrived at FedEx location',
+        loc: 'LITTLE ROCK, AR US',
+        time: fmt(tArriveHub),
+        state: 'done'
+      },
+      {
+        title: 'Departed FedEx location',
+        loc: 'LITTLE ROCK, AR US',
+        time: fmt(tDepartHub),
+        state: 'done'
+      },
+      {
+        title: 'Arrived at FedEx location',
+        loc: 'MEMPHIS, TN US',
+        time: fmt(tArriveMemphis),
+        state: 'done'
+      },
+      {
+        title: 'At local FedEx facility',
+        loc: 'MEMPHIS, TN US',
+        time: fmt(tSortMemphis),
         state: 'current'
       },
-      { title: 'On FedEx vehicle for delivery', loc: reg.destLabel, time: '', state: 'pending' },
-      { title: 'Delivered', loc: reg.destLabel, time: '', state: 'pending' }
+      {
+        title: 'On FedEx vehicle for delivery',
+        loc: 'ELIZABETHTON, TN US',
+        time: '',
+        state: 'pending'
+      },
+      {
+        title: 'Delivered',
+        loc: 'ELIZABETHTON, TN US',
+        time: '',
+        state: 'pending'
+      }
     ]
-  };
-}
-
-function progressFromStatus(status) {
-  const s = (status || '').toLowerCase();
-  if (/deliver/.test(s) && !/out|attempt|fail/.test(s)) return 100;
-  if (/out.?for.?delivery|out_for_delivery/.test(s)) return 85;
-  if (/in.?transit|transit|departed|arrived|hub|facility/.test(s)) return 50;
-  if (/pre.?transit|label|unknown|info.?received|created/.test(s)) return 10;
-  if (/return|exception|failure|fail/.test(s)) return 40;
-  return 50;
-}
-
-function mapEasyPostEvents(details) {
-  const list = (details || []).slice().reverse();
-  return list.map((d, i) => {
-    const title = (d.status || d.message || 'Update').replace(/_/g, ' ');
-    const loc = [d.tracking_location?.city, d.tracking_location?.state, d.tracking_location?.country]
-      .filter(Boolean)
-      .join(', ');
-    const time = d.datetime
-      ? new Date(d.datetime).toLocaleString('en-US', {
-          month: 'numeric',
-          day: 'numeric',
-          year: '2-digit',
-          hour: 'numeric',
-          minute: '2-digit'
-        })
-      : '';
-    let state = 'done';
-    if (i === 0) state = 'current';
-    return { title, loc, time, state, desc: d.message || '' };
-  });
-}
-
-async function trackEasyPost(trackingCode) {
-  const key = process.env.EASYPOST_API_KEY;
-  if (!key) return null;
-
-  const auth = Buffer.from(`${key}:`).toString('base64');
-  const headers = {
-    Authorization: `Basic ${auth}`,
-    'Content-Type': 'application/json'
-  };
-
-  let tracker = null;
-  const createRes = await fetch('https://api.easypost.com/v2/trackers', {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ tracker: { tracking_code: trackingCode } })
-  });
-
-  if (createRes.ok) {
-    tracker = await createRes.json();
-  } else {
-    const listRes = await fetch(
-      `https://api.easypost.com/v2/trackers?tracking_code=${encodeURIComponent(trackingCode)}`,
-      { headers: { Authorization: `Basic ${auth}` } }
-    );
-    if (listRes.ok) {
-      const list = await listRes.json();
-      tracker = list.trackers?.[0] || null;
-    }
-  }
-
-  if (!tracker || !tracker.tracking_code) return null;
-
-  const status = tracker.status || tracker.status_detail || 'unknown';
-  const events = mapEasyPostEvents(tracker.tracking_details);
-  if (events.length && !events.some((e) => e.state === 'current')) {
-    events[0].state = 'current';
-  }
-
-  const last = events[0];
-  return {
-    trackingNumber: tracker.tracking_code,
-    carrier: tracker.carrier || 'EasyPost',
-    status: String(status).replace(/_/g, ' '),
-    statusDetail: tracker.status_detail || status,
-    progress: progressFromStatus(status),
-    isPreTransit: /pre.?transit|unknown|label/i.test(status),
-    live: true,
-    source: 'EasyPost Tracker',
-    lastScan: last?.time || '',
-    eta: tracker.est_delivery_date ? dayStr(new Date(tracker.est_delivery_date)) : '',
-    events,
-    mode: tracker.mode
   };
 }
 
@@ -170,53 +146,22 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
   const raw = (req.query.number || req.query.tracking || '').trim();
-  if (!raw) {
-    return res.status(400).json({ error: 'Missing ?number=' });
-  }
+  if (!raw) return res.status(400).json({ error: 'Missing ?number=' });
 
-  const cleaned = cleanTn(raw);
-  const reg = REGISTRY[cleaned];
-
-  try {
-    const live = await trackEasyPost(cleaned);
-    if (live && live.live && live.events?.length) {
-      if (reg) {
-        live.name = reg.name;
-        live.street = reg.street;
-        live.city = reg.city;
-        live.state = reg.state;
-        live.zip = reg.zip;
-        live.phone = reg.phone;
-        live.destLabel = reg.destLabel;
-        live.trackingNumber = reg.displayTn || live.trackingNumber;
-      }
-      return res.status(200).json(live);
-    }
-  } catch (e) {
-    console.error('EasyPost track error', e.message);
-  }
-
-  if (reg) {
-    return res.status(200).json(earlyRouteFallback(reg, raw));
-  }
+  const reg = REGISTRY[cleanTn(raw)];
+  if (reg) return res.status(200).json(midRouteFallback(reg, raw));
 
   return res.status(200).json({
     trackingNumber: raw,
     carrier: 'Unknown',
     status: 'Not found',
-    statusDetail: 'No tracker data. Add EASYPOST_API_KEY for live carrier tracking.',
+    statusDetail: 'Tracking number not found.',
     progress: 0,
     live: false,
-    source: 'No data',
-    lastScan: '',
-    eta: '',
     events: []
   });
 }

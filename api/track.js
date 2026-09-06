@@ -1,4 +1,4 @@
-// Vercel serverless — EasyPost Tracker + early-route (~20%) fallback
+// Vercel serverless — EasyPost Tracker + mid-route (~50%) fallback for Peggy Palmer
 
 const REGISTRY = {
   '1188187236402382053': {
@@ -35,14 +35,14 @@ function dayStr(d) {
   });
 }
 
-/** Early route (~20%) — ~7 hours from Houston, Texarkana corridor */
+/** Mid-route (~50%) — Memphis corridor toward Elizabethton, TN */
 function earlyRouteFallback(reg, trackingNumber) {
   const now = new Date();
-  const t0 = new Date(now.getTime() - 36 * 3600000);
-  const t1 = new Date(now.getTime() - 32 * 3600000);
-  const t2 = new Date(now.getTime() - 30 * 3600000);
-  const t3 = new Date(now.getTime() - 4 * 3600000);
-  const eta = new Date(now.getTime() + 48 * 3600000);
+  const t0 = new Date(now.getTime() - 48 * 3600000);
+  const t1 = new Date(now.getTime() - 42 * 3600000);
+  const t2 = new Date(now.getTime() - 38 * 3600000);
+  const t3 = new Date(now.getTime() - 6 * 3600000);
+  const eta = new Date(now.getTime() + 36 * 3600000);
 
   return {
     trackingNumber: reg.displayTn || trackingNumber,
@@ -53,27 +53,27 @@ function earlyRouteFallback(reg, trackingNumber) {
     zip: reg.zip,
     phone: reg.phone,
     destLabel: reg.destLabel,
-    carrier: 'Global Express',
-    status: 'In Transit',
-    statusDetail: 'Second checkpoint · approx. 7 hours from origin',
-    progress: 20,
+    carrier: 'FedEx Ground',
+    status: 'In transit',
+    statusDetail: 'In transit · mid-route · approximately 50% complete',
+    progress: 50,
     isPreTransit: false,
     live: false,
-    source: 'Registered network (~20% complete · 80% remaining)',
+    source: 'Registered network (~50% complete · 50% remaining)',
     lastScan: fmt(t3),
     eta: dayStr(eta),
-    currentLocation: 'Texarkana, TX / AR corridor',
+    currentLocation: 'Memphis, TN corridor',
     events: [
-      { title: 'Label Created', loc: 'Houston, TX US', time: fmt(t0), state: 'done' },
-      { title: 'Picked Up', loc: 'Houston, TX', time: fmt(t1), state: 'done' },
-      { title: 'Departed Origin Facility', loc: 'Houston, TX', time: fmt(t2), state: 'done' },
+      { title: 'Shipment information sent to FedEx', loc: 'Houston, TX US', time: fmt(t0), state: 'done' },
+      { title: 'Picked up', loc: 'Houston, TX', time: fmt(t1), state: 'done' },
+      { title: 'Left FedEx origin facility', loc: 'Houston, TX', time: fmt(t2), state: 'done' },
       {
-        title: 'In Transit — Checkpoint 2',
-        loc: 'Texarkana, TX / AR corridor · approx. 7 hours from Houston',
+        title: 'In transit',
+        loc: 'Memphis, TN corridor · mid-route',
         time: fmt(t3),
         state: 'current'
       },
-      { title: 'Out for Delivery', loc: reg.destLabel, time: '', state: 'pending' },
+      { title: 'On FedEx vehicle for delivery', loc: reg.destLabel, time: '', state: 'pending' },
       { title: 'Delivered', loc: reg.destLabel, time: '', state: 'pending' }
     ]
   };

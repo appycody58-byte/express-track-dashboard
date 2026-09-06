@@ -7,7 +7,25 @@ const REGISTRY = {
     zip: '37643',
     phone: '423.491-0319',
     displayTn: '11881-87236-402382053',
-    destLabel: 'Elizabethton, TN'
+    destLabel: 'Elizabethton, TN',
+    destScan: 'ELIZABETHTON, TN US',
+    weight: '8.2 lbs / 3.72 kgs',
+    dimensions: '14 x 10 x 8 in.',
+    reference: 'PO-77641'
+  },
+  '4829155307918274036': {
+    name: 'Anita Vincent',
+    street: '4817 Friendly St',
+    city: '',
+    state: '',
+    zip: '',
+    phone: '',
+    displayTn: '48291-55307-918274036',
+    destLabel: '4817 Friendly St',
+    destScan: 'DESTINATION US',
+    weight: '6.4 lbs / 2.90 kgs',
+    dimensions: '12 x 9 x 6 in.',
+    reference: 'PO-80215'
   }
 };
 
@@ -35,16 +53,20 @@ function dayStr(d) {
 
 function midRouteFallback(reg, trackingNumber) {
   const now = new Date();
-  const tLabel = new Date(now.getTime() - 52 * 3600000);
-  const tPickup = new Date(now.getTime() - 46 * 3600000);
-  const tArriveOrigin = new Date(now.getTime() - 44 * 3600000);
-  const tDepartOrigin = new Date(now.getTime() - 40 * 3600000);
-  const tShreveport = new Date(now.getTime() - 36 * 3600000);
-  const tArriveLR = new Date(now.getTime() - 28 * 3600000);
-  const tDepartLR = new Date(now.getTime() - 22 * 3600000);
-  const tArriveMemphis = new Date(now.getTime() - 10 * 3600000);
-  const tSortMemphis = new Date(now.getTime() - 6 * 3600000);
+  // Slight offset per shipment so scans are not identical
+  const skew = reg.name === 'Anita Vincent' ? 2 : 0;
+  const tLabel = new Date(now.getTime() - (52 + skew) * 3600000);
+  const tPickup = new Date(now.getTime() - (46 + skew) * 3600000);
+  const tArriveOrigin = new Date(now.getTime() - (44 + skew) * 3600000);
+  const tDepartOrigin = new Date(now.getTime() - (40 + skew) * 3600000);
+  const tShreveport = new Date(now.getTime() - (36 + skew) * 3600000);
+  const tArriveLR = new Date(now.getTime() - (28 + skew) * 3600000);
+  const tDepartLR = new Date(now.getTime() - (22 + skew) * 3600000);
+  const tArriveMemphis = new Date(now.getTime() - (10 + skew) * 3600000);
+  const tSortMemphis = new Date(now.getTime() - (6 + skew) * 3600000);
   const eta = new Date(now.getTime() + 30 * 3600000);
+
+  const destScan = reg.destScan || (reg.destLabel || 'DESTINATION').toUpperCase() + ' US';
 
   return {
     trackingNumber: reg.displayTn || trackingNumber,
@@ -65,11 +87,11 @@ function midRouteFallback(reg, trackingNumber) {
     lastScan: fmt(tSortMemphis),
     eta: dayStr(eta),
     currentLocation: 'MEMPHIS, TN US',
-    weight: '8.2 lbs / 3.72 kgs',
-    dimensions: '14 x 10 x 8 in.',
+    weight: reg.weight || '8.2 lbs / 3.72 kgs',
+    dimensions: reg.dimensions || '14 x 10 x 8 in.',
     packaging: 'Customer packaging',
     shipDate: dayStr(tPickup),
-    reference: 'PO-77641',
+    reference: reg.reference || '—',
     events: [
       { title: 'Shipment information sent to FedEx', loc: 'HOUSTON, TX US', time: fmt(tLabel), state: 'done' },
       { title: 'Picked up', loc: 'HOUSTON, TX US', time: fmt(tPickup), state: 'done' },
@@ -80,8 +102,8 @@ function midRouteFallback(reg, trackingNumber) {
       { title: 'Departed FedEx location', loc: 'LITTLE ROCK, AR US', time: fmt(tDepartLR), state: 'done' },
       { title: 'Arrived at FedEx location', loc: 'MEMPHIS, TN US', time: fmt(tArriveMemphis), state: 'done' },
       { title: 'At local FedEx facility', loc: 'MEMPHIS, TN US', time: fmt(tSortMemphis), state: 'current' },
-      { title: 'On FedEx vehicle for delivery', loc: 'ELIZABETHTON, TN US', time: '', state: 'pending' },
-      { title: 'Delivered', loc: 'ELIZABETHTON, TN US', time: '', state: 'pending' }
+      { title: 'On FedEx vehicle for delivery', loc: destScan, time: '', state: 'pending' },
+      { title: 'Delivered', loc: destScan, time: '', state: 'pending' }
     ]
   };
 }

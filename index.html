@@ -165,10 +165,7 @@
           </div>
           <div class="route-row">
             <div class="rk">To</div>
-            <div class="rv">
-              <strong>Elizabethton, TN</strong>
-              Peggy Palmer<br>1201 Thomas Blvd<br>Elizabethton, TN 37643
-            </div>
+            <div class="rv" id="shipToBlock">—</div>
           </div>
           <div class="route-row">
             <div class="rk">Service</div>
@@ -178,7 +175,7 @@
       </div>
       <div class="progress-strip">
         <div class="ps-title">Shipment progress</div>
-        <div class="ps-labels"><span>Houston, TX</span><span>Elizabethton, TN</span></div>
+        <div class="ps-labels"><span>Houston, TX</span><span id="destLabelBar">Destination</span></div>
         <div class="ps-bar"><div class="ps-fill" id="bar" style="width:50%"></div></div>
         <div class="ps-meta">
           <strong id="pctText">50%</strong> of the route complete · <span id="remainText">50% remaining</span>
@@ -213,7 +210,11 @@
     </div>
   </footer>
   <script>
-    const REGISTERED = { '1188187236402382053': true };
+    const REGISTERED = {
+      '1188187236402382053': true,
+      '4829155307918274036': true
+    };
+
     function cleanTn(n) { return String(n || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase(); }
     function isRegistered(raw) { return !!REGISTERED[cleanTn(raw)]; }
     function showErr(msg) {
@@ -221,6 +222,21 @@
       el.style.display = msg ? 'block' : 'none';
       el.textContent = msg || '';
     }
+
+    function renderShipTo(d) {
+      var cityLine = [d.city, d.state, d.zip].filter(Boolean).join(', ');
+      var lines = [];
+      if (d.destLabel || cityLine) {
+        lines.push('<strong>' + (d.destLabel || cityLine) + '</strong>');
+      }
+      if (d.name) lines.push(d.name);
+      if (d.street) lines.push(d.street);
+      if (cityLine && d.destLabel !== cityLine) lines.push(cityLine);
+      if (d.phone) lines.push(d.phone);
+      document.getElementById('shipToBlock').innerHTML = lines.join('<br>') || '—';
+      document.getElementById('destLabelBar').textContent = d.destLabel || d.city || 'Destination';
+    }
+
     function renderTimeline(events) {
       var root = document.getElementById('timeline');
       if (!events || !events.length) {
@@ -239,6 +255,7 @@
       });
       root.innerHTML = html;
     }
+
     function applyData(d) {
       var prog = d.progress != null ? d.progress : 50;
       document.getElementById('result').style.display = 'block';
@@ -254,57 +271,18 @@
       document.getElementById('mapLoc').textContent = d.currentLocation || 'MEMPHIS, TN US';
       document.getElementById('mapNote').textContent = 'At local FedEx facility · mid-route to destination';
       document.getElementById('asof').textContent = new Date().toLocaleString('en-US');
-      document.getElementById('pkgWeight').textContent = d.weight || '8.2 lbs / 3.72 kgs';
-      document.getElementById('pkgDims').textContent = d.dimensions || '14 x 10 x 8 in.';
-      document.getElementById('pkgRef').textContent = d.reference || 'PO-77641';
+      document.getElementById('pkgWeight').textContent = d.weight || '—';
+      document.getElementById('pkgDims').textContent = d.dimensions || '—';
+      document.getElementById('pkgRef').textContent = d.reference || '—';
       document.getElementById('serviceDetail').textContent = d.carrier || 'FedEx Ground';
       if (d.shipDate) document.getElementById('shipDate').textContent = d.shipDate;
       else if (d.events && d.events.length)
-        document.getElementById('shipDate').textContent = d.events[d.events.length - 1].time || '—';
+        document.getElementById('shipDate').textContent = d.events[0].time || '—';
+      renderShipTo(d);
       renderTimeline(d.events || []);
       document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    function fallbackPeggy() {
-      var now = new Date();
-      function fmt(hAgo) {
-        return new Date(now.getTime() - hAgo * 3600000).toLocaleString('en-US', {
-          weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
-        });
-      }
-      function dayAgo(hAgo) {
-        return new Date(now.getTime() - hAgo * 3600000).toLocaleDateString('en-US', {
-          weekday: 'long', month: 'long', day: 'numeric'
-        });
-      }
-      applyData({
-        trackingNumber: '11881-87236-402382053',
-        status: 'In transit',
-        statusDetail: 'Arrived at FedEx location',
-        progress: 50,
-        currentLocation: 'MEMPHIS, TN US',
-        eta: new Date(now.getTime() + 30 * 3600000).toLocaleDateString('en-US', {
-          weekday: 'long', month: 'long', day: 'numeric'
-        }),
-        carrier: 'FedEx Ground',
-        weight: '8.2 lbs / 3.72 kgs',
-        dimensions: '14 x 10 x 8 in.',
-        reference: 'PO-77641',
-        shipDate: dayAgo(46),
-        events: [
-          { title: 'Shipment information sent to FedEx', loc: 'HOUSTON, TX US', time: fmt(52), state: 'done' },
-          { title: 'Picked up', loc: 'HOUSTON, TX US', time: fmt(46), state: 'done' },
-          { title: 'Arrived at FedEx origin facility', loc: 'HOUSTON, TX US', time: fmt(44), state: 'done' },
-          { title: 'Left FedEx origin facility', loc: 'HOUSTON, TX US', time: fmt(40), state: 'done' },
-          { title: 'In transit', loc: 'SHREVEPORT, LA US', time: fmt(36), state: 'done' },
-          { title: 'Arrived at FedEx location', loc: 'LITTLE ROCK, AR US', time: fmt(28), state: 'done' },
-          { title: 'Departed FedEx location', loc: 'LITTLE ROCK, AR US', time: fmt(22), state: 'done' },
-          { title: 'Arrived at FedEx location', loc: 'MEMPHIS, TN US', time: fmt(10), state: 'done' },
-          { title: 'At local FedEx facility', loc: 'MEMPHIS, TN US', time: fmt(6), state: 'current' },
-          { title: 'On FedEx vehicle for delivery', loc: 'ELIZABETHTON, TN US', time: '', state: 'pending' },
-          { title: 'Delivered', loc: 'ELIZABETHTON, TN US', time: '', state: 'pending' }
-        ]
-      });
-    }
+
     async function doTrack() {
       var raw = (document.getElementById('tnInput').value || '').trim();
       var btn = document.getElementById('btnTrack');
@@ -312,31 +290,22 @@
       if (!raw) { showErr('Please enter a tracking number.'); return; }
       btn.disabled = true; btn.textContent = '…';
       try {
-        if (isRegistered(raw)) {
-          try {
-            var res = await fetch('/api/track?number=' + encodeURIComponent(raw));
-            var d = await res.json();
-            if (d && d.status && d.status !== 'Not found') {
-              if (!d.carrier || d.carrier === 'Global Express') d.carrier = 'FedEx Ground';
-              applyData(d);
-            } else fallbackPeggy();
-          } catch (e) { fallbackPeggy(); }
+        var res = await fetch('/api/track?number=' + encodeURIComponent(raw));
+        var d = await res.json();
+        if (!d || d.status === 'Not found' || (!d.events || !d.events.length)) {
+          showErr('Sorry, we are unable to retrieve your tracking results at this time. Please check your tracking number and try again.');
+          document.getElementById('result').style.display = 'none';
         } else {
-          try {
-            var res2 = await fetch('/api/track?number=' + encodeURIComponent(raw));
-            var d2 = await res2.json();
-            if (d2.status === 'Not found' || !d2.events || !d2.events.length) {
-              showErr('Sorry, we are unable to retrieve your tracking results at this time. Please check your tracking number and try again.');
-              document.getElementById('result').style.display = 'none';
-            } else applyData(d2);
-          } catch (e2) {
-            showErr('Sorry, we are unable to retrieve your tracking results at this time.');
-          }
+          if (!d.carrier || d.carrier === 'Global Express') d.carrier = 'FedEx Ground';
+          applyData(d);
         }
+      } catch (e) {
+        showErr('Sorry, we are unable to retrieve your tracking results at this time.');
       } finally {
         btn.disabled = false; btn.textContent = 'TRACK';
       }
     }
+
     document.getElementById('tnInput').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') doTrack();
     });

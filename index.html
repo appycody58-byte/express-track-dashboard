@@ -8,418 +8,116 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background: #fff;
-      color: #333;
-      font-size: 14px;
-      line-height: 1.45;
-      min-height: 100vh;
+      background: #fff; color: #333; font-size: 14px; line-height: 1.45; min-height: 100vh;
     }
-
-    /* Top utility bar */
     .util-bar {
-      background: #4d148c;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding: 0 40px;
-      font-size: 12px;
+      background: #4d148c; height: 36px; display: flex; align-items: center;
+      justify-content: flex-end; padding: 0 40px; font-size: 12px;
     }
-    .util-bar a {
-      color: #fff;
-      text-decoration: none;
-      margin-left: 24px;
-      opacity: 0.95;
-    }
-    .util-bar a:hover { text-decoration: underline; }
-
-    /* Main nav */
+    .util-bar a { color: #fff; text-decoration: none; margin-left: 24px; opacity: 0.95; }
     .main-nav {
-      background: #4d148c;
-      border-top: 1px solid rgba(255,255,255,0.12);
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 40px;
+      background: #4d148c; border-top: 1px solid rgba(255,255,255,0.12);
+      height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 40px;
     }
-    .logo {
-      font-size: 28px;
-      font-weight: 800;
-      font-style: italic;
-      color: #fff;
-      letter-spacing: -0.5px;
-      line-height: 1;
-    }
+    .logo { font-size: 28px; font-weight: 800; font-style: italic; color: #fff; letter-spacing: -0.5px; }
     .logo span { color: #ff6200; }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-    }
-    .nav-links a {
-      color: #fff;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    .nav-links a:hover { text-decoration: underline; }
-
-    /* Track module */
-    .track-module {
-      background: #f2f2f2;
-      border-bottom: 1px solid #ddd;
-      padding: 28px 40px 32px;
-    }
-    .track-module-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .track-module h1 {
-      font-size: 20px;
-      font-weight: 400;
-      color: #333;
-      margin-bottom: 14px;
-    }
-    .track-form {
-      display: flex;
-      max-width: 560px;
-      background: #fff;
-      border: 1px solid #999;
-    }
-    .track-form:focus-within {
-      border-color: #4d148c;
-      box-shadow: 0 0 0 1px #4d148c;
-    }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: #fff; text-decoration: none; font-size: 14px; font-weight: 500; }
+    .track-module { background: #f2f2f2; border-bottom: 1px solid #ddd; padding: 28px 40px 32px; }
+    .track-module-inner { max-width: 1100px; margin: 0 auto; }
+    .track-module h1 { font-size: 20px; font-weight: 400; color: #333; margin-bottom: 14px; }
+    .track-form { display: flex; max-width: 560px; background: #fff; border: 1px solid #999; }
+    .track-form:focus-within { border-color: #4d148c; box-shadow: 0 0 0 1px #4d148c; }
     .track-form input {
-      flex: 1;
-      border: none;
-      height: 48px;
-      padding: 0 16px;
-      font-size: 16px;
-      font-family: inherit;
-      outline: none;
-      color: #333;
+      flex: 1; border: none; height: 48px; padding: 0 16px; font-size: 16px; font-family: inherit; outline: none;
     }
     .track-form button {
-      height: 48px;
-      padding: 0 28px;
-      background: #ff6200;
-      color: #fff;
-      border: none;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      font-family: inherit;
-      cursor: pointer;
-      white-space: nowrap;
+      height: 48px; padding: 0 28px; background: #ff6200; color: #fff; border: none;
+      font-size: 14px; font-weight: 700; letter-spacing: 0.04em; font-family: inherit; cursor: pointer;
     }
     .track-form button:hover { background: #e55800; }
-    .track-form button:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
-    .track-help {
-      margin-top: 10px;
-      font-size: 12px;
-      color: #666;
-    }
+    .track-form button:disabled { opacity: 0.7; cursor: not-allowed; }
+    .track-help { margin-top: 10px; font-size: 12px; color: #666; }
     .track-error {
-      display: none;
-      margin-top: 14px;
-      max-width: 560px;
-      padding: 12px 14px;
-      background: #fff;
-      border: 1px solid #c00;
-      border-left: 4px solid #c00;
-      color: #333;
-      font-size: 13px;
+      display: none; margin-top: 14px; max-width: 560px; padding: 12px 14px;
+      background: #fff; border: 1px solid #c00; border-left: 4px solid #c00; font-size: 13px;
     }
-
-    /* Results */
-    .page {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 40px 60px;
-    }
+    .page { max-width: 1100px; margin: 0 auto; padding: 0 40px 60px; }
     #result { display: none; }
-
-    .result-header {
-      padding: 28px 0 8px;
-      border-bottom: 1px solid #e5e5e5;
-      margin-bottom: 0;
+    .result-header { padding: 28px 0 8px; border-bottom: 1px solid #e5e5e5; }
+    .tracking-label { font-size: 13px; color: #666; margin-bottom: 4px; }
+    .tracking-id {
+      font-size: 15px; font-weight: 600; font-family: Consolas, "Courier New", monospace; letter-spacing: 0.02em;
     }
-    .result-header .tracking-label {
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 4px;
-    }
-    .result-header .tracking-id {
-      font-size: 15px;
-      font-weight: 600;
-      font-family: Consolas, "Courier New", monospace;
-      color: #333;
-      letter-spacing: 0.02em;
-    }
-
-    /* Key status block */
     .key-status {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 0;
-      border-bottom: 1px solid #e5e5e5;
-      padding: 28px 0 32px;
+      display: grid; grid-template-columns: 1.4fr 1fr; border-bottom: 1px solid #e5e5e5; padding: 28px 0 32px;
     }
     @media (max-width: 800px) {
       .key-status { grid-template-columns: 1fr; gap: 28px; }
       .page, .track-module, .main-nav, .util-bar { padding-left: 20px; padding-right: 20px; }
     }
-
-    .status-main .eyebrow {
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #666;
-      margin-bottom: 8px;
+    .eyebrow {
+      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #666; margin-bottom: 8px;
     }
-    .status-main .headline {
-      font-size: 32px;
-      font-weight: 300;
-      color: #333;
-      margin-bottom: 8px;
-      line-height: 1.2;
-    }
-    .status-main .subhead {
-      font-size: 16px;
-      color: #666;
-      margin-bottom: 20px;
-    }
-    .delivery-date {
-      font-size: 15px;
-      color: #333;
-    }
-    .delivery-date strong {
-      font-weight: 700;
-    }
-
-    .route-summary {
-      border-left: 1px solid #e5e5e5;
-      padding-left: 36px;
-    }
+    .headline { font-size: 32px; font-weight: 300; color: #333; margin-bottom: 8px; line-height: 1.2; }
+    .subhead { font-size: 16px; color: #666; margin-bottom: 20px; }
+    .delivery-date { font-size: 15px; }
+    .delivery-date strong { font-weight: 700; }
+    .route-summary { border-left: 1px solid #e5e5e5; padding-left: 36px; }
     @media (max-width: 800px) {
-      .route-summary {
-        border-left: none;
-        padding-left: 0;
-        border-top: 1px solid #e5e5e5;
-        padding-top: 24px;
-      }
+      .route-summary { border-left: none; padding-left: 0; border-top: 1px solid #e5e5e5; padding-top: 24px; }
     }
-    .route-row {
-      display: grid;
-      grid-template-columns: 80px 1fr;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .route-row:last-child { margin-bottom: 0; }
+    .route-row { display: grid; grid-template-columns: 80px 1fr; gap: 8px; margin-bottom: 16px; }
     .route-row .rk {
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: #666;
-      padding-top: 2px;
+      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #666; padding-top: 2px;
     }
-    .route-row .rv {
-      font-size: 15px;
-      color: #333;
-    }
-    .route-row .rv strong {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-
-    /* Progress strip */
-    .progress-strip {
-      background: #fafafa;
-      border: 1px solid #e5e5e5;
-      padding: 20px 24px;
-      margin: 28px 0;
-    }
-    .progress-strip .ps-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #333;
-      margin-bottom: 12px;
-    }
-    .ps-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      color: #666;
-      margin-bottom: 8px;
-    }
-    .ps-bar {
-      height: 6px;
-      background: #e0e0e0;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .ps-fill {
-      height: 100%;
-      width: 50%;
-      background: #4d148c;
-      border-radius: 3px;
-      transition: width 0.35s ease;
-    }
-    .ps-meta {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #666;
-    }
+    .route-row .rv strong { display: block; font-weight: 600; margin-bottom: 2px; }
+    .progress-strip { background: #fafafa; border: 1px solid #e5e5e5; padding: 20px 24px; margin: 28px 0; }
+    .ps-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+    .ps-labels { display: flex; justify-content: space-between; font-size: 12px; color: #666; margin-bottom: 8px; }
+    .ps-bar { height: 6px; background: #e0e0e0; border-radius: 3px; overflow: hidden; }
+    .ps-fill { height: 100%; width: 50%; background: #4d148c; border-radius: 3px; }
+    .ps-meta { margin-top: 10px; font-size: 13px; color: #666; }
     .ps-meta strong { color: #4d148c; }
-
-    /* Location callout */
     .loc-callout {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-      padding: 18px 0 8px;
-      border-bottom: 1px solid #e5e5e5;
-      margin-bottom: 8px;
+      display: flex; gap: 16px; align-items: flex-start; padding: 18px 0 8px;
+      border-bottom: 1px solid #e5e5e5; margin-bottom: 8px;
     }
     .loc-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #4d148c;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 700;
-      flex-shrink: 0;
-      letter-spacing: 0.02em;
+      width: 40px; height: 40px; border-radius: 50%; background: #4d148c; color: #fff;
+      display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0;
     }
-    .loc-body .loc-k {
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #666;
-      margin-bottom: 4px;
-    }
-    .loc-body .loc-v {
-      font-size: 18px;
-      font-weight: 400;
-      color: #333;
-    }
-    .loc-body .loc-s {
-      font-size: 14px;
-      color: #666;
-      margin-top: 4px;
-    }
-
-    /* Travel history */
-    .history-section {
-      padding: 28px 0 8px;
-    }
+    .loc-k { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #666; margin-bottom: 4px; }
+    .loc-v { font-size: 18px; color: #333; }
+    .loc-s { font-size: 14px; color: #666; margin-top: 4px; }
+    .history-section { padding: 28px 0 8px; }
     .history-section h2 {
-      font-size: 18px;
-      font-weight: 400;
-      color: #333;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #e5e5e5;
+      font-size: 18px; font-weight: 400; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #e5e5e5;
     }
-
     .th-list { list-style: none; }
     .th-item {
-      display: grid;
-      grid-template-columns: 160px 1fr;
-      gap: 20px;
-      padding: 16px 0;
-      border-bottom: 1px solid #eee;
-      position: relative;
+      display: grid; grid-template-columns: 160px 1fr; gap: 20px; padding: 16px 0; border-bottom: 1px solid #eee;
     }
-    @media (max-width: 600px) {
-      .th-item { grid-template-columns: 1fr; gap: 4px; }
-    }
-    .th-item:last-child { border-bottom: none; }
-    .th-time {
-      font-size: 13px;
-      color: #666;
-    }
-    .th-content .th-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: #333;
-      margin-bottom: 2px;
-    }
-    .th-content .th-loc {
-      font-size: 13px;
-      color: #666;
-    }
-    .th-item.current .th-title {
-      color: #4d148c;
-    }
-    .th-item.pending {
-      opacity: 0.45;
-    }
-    .th-item.pending .th-time {
-      color: #999;
-    }
-
-    /* Service / details footer block */
+    @media (max-width: 600px) { .th-item { grid-template-columns: 1fr; gap: 4px; } }
+    .th-time { font-size: 13px; color: #666; }
+    .th-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+    .th-loc { font-size: 13px; color: #666; }
+    .th-item.current .th-title { color: #4d148c; }
+    .th-item.pending { opacity: 0.45; }
     .details-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 32px;
-      padding: 28px 0;
-      margin-top: 12px;
-      border-top: 1px solid #e5e5e5;
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px 32px;
+      padding: 28px 0; margin-top: 12px; border-top: 1px solid #e5e5e5;
     }
-    @media (max-width: 700px) {
-      .details-grid { grid-template-columns: 1fr; gap: 20px; }
-    }
+    @media (max-width: 700px) { .details-grid { grid-template-columns: 1fr; } }
     .detail-col h3 {
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #666;
-      margin-bottom: 10px;
+      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #666; margin-bottom: 10px;
     }
-    .detail-col p {
-      font-size: 14px;
-      color: #333;
-      line-height: 1.55;
-    }
-
-    /* Site footer */
-    .site-footer {
-      background: #4d148c;
-      color: rgba(255,255,255,0.85);
-      padding: 28px 40px;
-      font-size: 12px;
-      margin-top: 40px;
-    }
+    .detail-col p { font-size: 14px; line-height: 1.55; }
+    .site-footer { background: #4d148c; color: rgba(255,255,255,0.85); padding: 28px 40px; font-size: 12px; margin-top: 40px; }
     .site-footer-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
+      max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
     }
-    .site-footer a {
-      color: #fff;
-      text-decoration: none;
-      margin-right: 18px;
-    }
-    .site-footer a:hover { text-decoration: underline; }
+    .site-footer a { color: #fff; text-decoration: none; margin-right: 18px; }
   </style>
 </head>
 <body>
@@ -427,7 +125,6 @@
     <a href="#">Sign Up / Log In</a>
     <a href="#">Support</a>
   </div>
-
   <nav class="main-nav">
     <div class="logo">Fed<span>Ex</span></div>
     <div class="nav-links">
@@ -437,34 +134,29 @@
       <a href="#">Support</a>
     </div>
   </nav>
-
   <div class="track-module">
     <div class="track-module-inner">
       <h1>Track a package or shipment</h1>
       <div class="track-form">
-        <input id="tnInput" type="text" placeholder="Tracking ID" autocomplete="off" value="" aria-label="Tracking ID" />
+        <input id="tnInput" type="text" placeholder="Tracking ID" autocomplete="off" value="" />
         <button type="button" id="btnTrack" onclick="doTrack()">TRACK</button>
       </div>
       <p class="track-help">Enter up to 30 tracking numbers, one per line.</p>
       <div class="track-error" id="errBox"></div>
     </div>
   </div>
-
   <div class="page">
     <div id="result">
       <div class="result-header">
         <div class="tracking-label">Tracking ID</div>
         <div class="tracking-id" id="tnDisplay">—</div>
       </div>
-
       <div class="key-status">
         <div class="status-main">
           <div class="eyebrow">Status</div>
           <div class="headline" id="statusTitle">In transit</div>
           <div class="subhead" id="statusDetail">—</div>
-          <div class="delivery-date">
-            Scheduled delivery: <strong id="eta">Pending</strong>
-          </div>
+          <div class="delivery-date">Scheduled delivery: <strong id="eta">Pending</strong></div>
         </div>
         <div class="route-summary">
           <div class="route-row">
@@ -475,9 +167,7 @@
             <div class="rk">To</div>
             <div class="rv">
               <strong>Elizabethton, TN</strong>
-              Peggy Palmer<br>
-              1201 Thomas Blvd<br>
-              Elizabethton, TN 37643
+              Peggy Palmer<br>1201 Thomas Blvd<br>Elizabethton, TN 37643
             </div>
           </div>
           <div class="route-row">
@@ -486,77 +176,51 @@
           </div>
         </div>
       </div>
-
       <div class="progress-strip">
         <div class="ps-title">Shipment progress</div>
-        <div class="ps-labels">
-          <span>Houston, TX</span>
-          <span>Elizabethton, TN</span>
-        </div>
+        <div class="ps-labels"><span>Houston, TX</span><span>Elizabethton, TN</span></div>
         <div class="ps-bar"><div class="ps-fill" id="bar" style="width:50%"></div></div>
         <div class="ps-meta">
-          <strong id="pctText">50%</strong> of the route complete ·
-          <span id="remainText">50% remaining</span>
+          <strong id="pctText">50%</strong> of the route complete · <span id="remainText">50% remaining</span>
         </div>
       </div>
-
       <div class="loc-callout">
         <div class="loc-icon">FX</div>
         <div class="loc-body">
           <div class="loc-k">Current location in the FedEx network</div>
-          <div class="loc-v" id="mapLoc">Memphis, TN</div>
-          <div class="loc-s" id="mapNote">Package is in transit · mid-route to destination</div>
+          <div class="loc-v" id="mapLoc">MEMPHIS, TN US</div>
+          <div class="loc-s" id="mapNote">At local FedEx facility · mid-route to destination</div>
         </div>
       </div>
-
       <div class="history-section">
         <h2>Travel history</h2>
         <ul class="th-list" id="timeline"></ul>
       </div>
-
       <div class="details-grid">
-        <div class="detail-col">
-          <h3>Ship date</h3>
-          <p id="shipDate">—</p>
-        </div>
-        <div class="detail-col">
-          <h3>Standard transit</h3>
-          <p>FedEx Ground</p>
-        </div>
-        <div class="detail-col">
-          <h3>Last updated</h3>
-          <p id="asof">—</p>
-        </div>
+        <div class="detail-col"><h3>Ship date</h3><p id="shipDate">—</p></div>
+        <div class="detail-col"><h3>Standard transit</h3><p id="serviceDetail">FedEx Ground</p></div>
+        <div class="detail-col"><h3>Last updated</h3><p id="asof">—</p></div>
+        <div class="detail-col"><h3>Weight</h3><p id="pkgWeight">—</p></div>
+        <div class="detail-col"><h3>Dimensions</h3><p id="pkgDims">—</p></div>
+        <div class="detail-col"><h3>Reference</h3><p id="pkgRef">—</p></div>
       </div>
     </div>
   </div>
-
   <footer class="site-footer">
     <div class="site-footer-inner">
-      <div>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Use</a>
-        <a href="#">Site Map</a>
-      </div>
+      <div><a href="#">Privacy Policy</a><a href="#">Terms of Use</a><a href="#">Site Map</a></div>
       <div>© FedEx</div>
     </div>
   </footer>
-
   <script>
     const REGISTERED = { '1188187236402382053': true };
-
-    function cleanTn(n) {
-      return String(n || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-    }
-    function isRegistered(raw) {
-      return !!REGISTERED[cleanTn(raw)];
-    }
+    function cleanTn(n) { return String(n || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase(); }
+    function isRegistered(raw) { return !!REGISTERED[cleanTn(raw)]; }
     function showErr(msg) {
       var el = document.getElementById('errBox');
       el.style.display = msg ? 'block' : 'none';
       el.textContent = msg || '';
     }
-
     function renderTimeline(events) {
       var root = document.getElementById('timeline');
       if (!events || !events.length) {
@@ -575,7 +239,6 @@
       });
       root.innerHTML = html;
     }
-
     function applyData(d) {
       var prog = d.progress != null ? d.progress : 50;
       document.getElementById('result').style.display = 'block';
@@ -588,29 +251,29 @@
       document.getElementById('bar').style.width = prog + '%';
       document.getElementById('pctText').textContent = prog + '%';
       document.getElementById('remainText').textContent = (100 - prog) + '% remaining';
-      document.getElementById('mapLoc').textContent =
-        d.currentLocation || 'Memphis, TN';
-      document.getElementById('mapNote').textContent =
-        'Package is in transit · mid-route to destination';
+      document.getElementById('mapLoc').textContent = d.currentLocation || 'MEMPHIS, TN US';
+      document.getElementById('mapNote').textContent = 'At local FedEx facility · mid-route to destination';
       document.getElementById('asof').textContent = new Date().toLocaleString('en-US');
-
-      // Ship date from first event if available
-      if (d.events && d.events.length) {
-        var first = d.events[d.events.length - 1];
-        document.getElementById('shipDate').textContent = first.time || '—';
-      }
-
+      document.getElementById('pkgWeight').textContent = d.weight || '8.2 lbs / 3.72 kgs';
+      document.getElementById('pkgDims').textContent = d.dimensions || '14 x 10 x 8 in.';
+      document.getElementById('pkgRef').textContent = d.reference || 'PO-77641';
+      document.getElementById('serviceDetail').textContent = d.carrier || 'FedEx Ground';
+      if (d.shipDate) document.getElementById('shipDate').textContent = d.shipDate;
+      else if (d.events && d.events.length)
+        document.getElementById('shipDate').textContent = d.events[d.events.length - 1].time || '—';
       renderTimeline(d.events || []);
       document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-
     function fallbackPeggy() {
       var now = new Date();
       function fmt(hAgo) {
-        var d = new Date(now.getTime() - hAgo * 3600000);
-        return d.toLocaleString('en-US', {
-          weekday: 'short', month: 'short', day: 'numeric',
-          hour: 'numeric', minute: '2-digit'
+        return new Date(now.getTime() - hAgo * 3600000).toLocaleString('en-US', {
+          weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+        });
+      }
+      function dayAgo(hAgo) {
+        return new Date(now.getTime() - hAgo * 3600000).toLocaleDateString('en-US', {
+          weekday: 'long', month: 'long', day: 'numeric'
         });
       }
       applyData({
@@ -619,31 +282,35 @@
         statusDetail: 'Arrived at FedEx location',
         progress: 50,
         currentLocation: 'MEMPHIS, TN US',
-        eta: new Date(now.getTime() + 36 * 3600000).toLocaleDateString('en-US', {
+        eta: new Date(now.getTime() + 30 * 3600000).toLocaleDateString('en-US', {
           weekday: 'long', month: 'long', day: 'numeric'
         }),
         carrier: 'FedEx Ground',
+        weight: '8.2 lbs / 3.72 kgs',
+        dimensions: '14 x 10 x 8 in.',
+        reference: 'PO-77641',
+        shipDate: dayAgo(46),
         events: [
-          { title: 'Shipment information sent to FedEx', loc: 'HOUSTON, TX US', time: fmt(48), state: 'done' },
-          { title: 'Picked up', loc: 'HOUSTON, TX US', time: fmt(42), state: 'done' },
-          { title: 'Left FedEx origin facility', loc: 'HOUSTON, TX US', time: fmt(38), state: 'done' },
-          { title: 'Arrived at FedEx location', loc: 'MEMPHIS, TN US', time: fmt(6), state: 'current' },
+          { title: 'Shipment information sent to FedEx', loc: 'HOUSTON, TX US', time: fmt(52), state: 'done' },
+          { title: 'Picked up', loc: 'HOUSTON, TX US', time: fmt(46), state: 'done' },
+          { title: 'Arrived at FedEx origin facility', loc: 'HOUSTON, TX US', time: fmt(44), state: 'done' },
+          { title: 'Left FedEx origin facility', loc: 'HOUSTON, TX US', time: fmt(40), state: 'done' },
+          { title: 'In transit', loc: 'SHREVEPORT, LA US', time: fmt(36), state: 'done' },
+          { title: 'Arrived at FedEx location', loc: 'LITTLE ROCK, AR US', time: fmt(28), state: 'done' },
+          { title: 'Departed FedEx location', loc: 'LITTLE ROCK, AR US', time: fmt(22), state: 'done' },
+          { title: 'Arrived at FedEx location', loc: 'MEMPHIS, TN US', time: fmt(10), state: 'done' },
+          { title: 'At local FedEx facility', loc: 'MEMPHIS, TN US', time: fmt(6), state: 'current' },
           { title: 'On FedEx vehicle for delivery', loc: 'ELIZABETHTON, TN US', time: '', state: 'pending' },
           { title: 'Delivered', loc: 'ELIZABETHTON, TN US', time: '', state: 'pending' }
         ]
       });
     }
-
     async function doTrack() {
       var raw = (document.getElementById('tnInput').value || '').trim();
       var btn = document.getElementById('btnTrack');
       showErr('');
-      if (!raw) {
-        showErr('Please enter a tracking number.');
-        return;
-      }
-      btn.disabled = true;
-      btn.textContent = '…';
+      if (!raw) { showErr('Please enter a tracking number.'); return; }
+      btn.disabled = true; btn.textContent = '…';
       try {
         if (isRegistered(raw)) {
           try {
@@ -652,12 +319,8 @@
             if (d && d.status && d.status !== 'Not found') {
               if (!d.carrier || d.carrier === 'Global Express') d.carrier = 'FedEx Ground';
               applyData(d);
-            } else {
-              fallbackPeggy();
-            }
-          } catch (e) {
-            fallbackPeggy();
-          }
+            } else fallbackPeggy();
+          } catch (e) { fallbackPeggy(); }
         } else {
           try {
             var res2 = await fetch('/api/track?number=' + encodeURIComponent(raw));
@@ -665,19 +328,15 @@
             if (d2.status === 'Not found' || !d2.events || !d2.events.length) {
               showErr('Sorry, we are unable to retrieve your tracking results at this time. Please check your tracking number and try again.');
               document.getElementById('result').style.display = 'none';
-            } else {
-              applyData(d2);
-            }
+            } else applyData(d2);
           } catch (e2) {
             showErr('Sorry, we are unable to retrieve your tracking results at this time.');
           }
         }
       } finally {
-        btn.disabled = false;
-        btn.textContent = 'TRACK';
+        btn.disabled = false; btn.textContent = 'TRACK';
       }
     }
-
     document.getElementById('tnInput').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') doTrack();
     });

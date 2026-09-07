@@ -1,3 +1,5 @@
+import { getByTracking, cleanTn as storeClean } from './lib/store.js';
+
 const REGISTRY = {
   '1188187236402382053': {
     name: 'Peggy Palmer',
@@ -30,7 +32,7 @@ const REGISTRY = {
 };
 
 function cleanTn(n) {
-  return String(n || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+  return storeClean(n);
 }
 
 function fmt(d) {
@@ -53,7 +55,6 @@ function dayStr(d) {
 
 function midRouteFallback(reg, trackingNumber) {
   const now = new Date();
-  // Slight offset per shipment so scans are not identical
   const skew = reg.name === 'Anita Vincent' ? 2 : 0;
   const tLabel = new Date(now.getTime() - (52 + skew) * 3600000);
   const tPickup = new Date(now.getTime() - (46 + skew) * 3600000);
@@ -65,8 +66,7 @@ function midRouteFallback(reg, trackingNumber) {
   const tArriveMemphis = new Date(now.getTime() - (10 + skew) * 3600000);
   const tSortMemphis = new Date(now.getTime() - (6 + skew) * 3600000);
   const eta = new Date(now.getTime() + 30 * 3600000);
-
-  const destScan = reg.destScan || (reg.destLabel || 'DESTINATION').toUpperCase() + ' US';
+  const destScan = reg.destScan || 'DESTINATION US';
 
   return {
     trackingNumber: reg.displayTn || trackingNumber,
@@ -83,15 +83,15 @@ function midRouteFallback(reg, trackingNumber) {
     progress: 50,
     isPreTransit: false,
     live: false,
-    source: 'FedEx network',
+    source: 'Registered network',
     lastScan: fmt(tSortMemphis),
     eta: dayStr(eta),
     currentLocation: 'MEMPHIS, TN US',
-    weight: reg.weight || '8.2 lbs / 3.72 kgs',
-    dimensions: reg.dimensions || '14 x 10 x 8 in.',
+    weight: reg.weight,
+    dimensions: reg.dimensions,
     packaging: 'Customer packaging',
     shipDate: dayStr(tPickup),
-    reference: reg.reference || '—',
+    reference: reg.reference,
     events: [
       { title: 'Shipment information sent to FedEx', loc: 'HOUSTON, TX US', time: fmt(tLabel), state: 'done' },
       { title: 'Picked up', loc: 'HOUSTON, TX US', time: fmt(tPickup), state: 'done' },
@@ -108,6 +108,25 @@ function midRouteFallback(reg, trackingNumber) {
   };
 }
 
+function mergeRegistry(reg, live) {
+  if (!reg) return live;
+  return {
+    ...live,
+    name: reg.name,
+    street: reg.street,
+    city: reg.city,
+    state: reg.state,
+    zip: reg.zip,
+    phone: reg.phone,
+    destLabel: reg.destLabel,
+    trackingNumber: reg.displayTn || live.trackingNumber,
+    weight: live.weight || reg.weight,
+    dimensions: live.dimensions || reg.dimensions,
+    reference: live.reference || reg.reference,
+    carrier: live.carrier || 'FedEx Ground'
+  };
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -118,7 +137,16 @@ export default async function handler(req, res) {
   const raw = (req.query.number || req.query.tracking || '').trim();
   if (!raw) return res.status(400).json({ error: 'Missing ?number=' });
 
-  const reg = REGISTRY[cleanTn(raw)];
+  const key = cleanTn(raw);
+  const reg = REGISTRY[key];
+
+  // 1) Prefer latest FedEx webhook update
+  const fromWebhook = getByTracking(key);
+  if (fromWebhook && fromWebhook.status) {
+    return res.status(200).json(mergeRegistry(reg, fromWebhook));
+  }
+
+  // 2) Registered demo shipments (Peggy / Anita)
   if (reg) return res.status(200).json(midRouteFallback(reg, raw));
 
   return res.status(200).json({
